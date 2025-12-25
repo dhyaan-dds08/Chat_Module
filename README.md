@@ -48,11 +48,48 @@ Alternative Considered: Traditional Navigator 2.0 was rejected due to verbose AP
 - Perfect for simple state like tab switching
 - Will integrate with Bloc for complex features
 
+#### Networking
+**dio (^5.9.0)** ✅
+
+Why dio over http package?
+
+- **Interceptors**: Add request/response interceptors for logging, authentication, error handling
+- **Timeout Configuration**: Granular control over connection, send, and receive timeouts
+- **Better Error Handling**: Type-safe error handling with DioException
+- **Form Data & File Upload**: Built-in support for multipart requests (future-ready)
+- **Request Cancellation**: Cancel ongoing requests when needed
+- **Debug Logging**: LogInterceptor for development debugging
+
+Alternative Considered: http package was rejected due to lack of interceptor support and verbose error handling.
+
+#### App Metadata
+**package_info_plus (^9.0.0)** ✅
+
+- Retrieves app name, version, build number, and package name at runtime
+- Used to populate API request headers for better tracking and debugging
+- Platform-specific information (Android/iOS/Web) for analytics
+- Essential for version-specific API behavior and monitoring
+
+
+#### Responsive Design
+**sizer (^2.0.15) + Custom AppConfig** ✅
+
+Why this approach?
+- **Percentage-based sizing**: 1.h = 1% of screen height, 1.w = 1% of screen width
+- **Theme-aware**: AppConfig provides access to TextTheme styles (bodySmall, titleMedium, etc.)
+- **Device dimensions**: Helper methods for custom calculations (config.w(5), config.h(10))
+- **Consistent spacing**: Predefined spacing values that scale across devices
+- **Maintainable**: Change one value, updates everywhere
+
+Features:
+- All spacing, padding, and sizes defined in AppConfig
+- Text styles use Theme.of(context).textTheme for accessibility
+- Automatic text scaling based on user preferences
+- Easy maintenance and consistent UI across screens
+
 ### To Be Implemented
 
 - **State Management**: flutter_bloc - For complex state (users, chats, messages)
-- **Responsive Design**: sizer - Percentage-based responsive sizing
-- **HTTP Client**: dio - API calls for receiver messages
 - **Local Storage**: hive_ce and SharedPreferences - Persistent data storage
 - **Code Generation**: build_runner, json_serializable
 
@@ -64,17 +101,19 @@ Alternative Considered: Traditional Navigator 2.0 was rejected due to verbose AP
 - Material Design 3 theming
 - Error handling for unknown routes
 - Centralized routing configuration
+- Scroll position preservation
 
 ### 🚧 In Progress
 - Users List screen with custom AppBar
 - Chat History view
+- Add users with FAB
 
 ### 📋 Planned
-- Add users with FAB
+
 - Chat screen with sender/receiver messages
 - API integration for receiver messages
 - Local data persistence
-- Scroll position preservation
+
 
 ## Getting Started
 ```bash

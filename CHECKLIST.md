@@ -2,7 +2,7 @@
 
 **Started:** 25/12/2025  
 **Deadline:** 27/12/2025
-**Current Status:** 🟡 In Progress - Navigation Complete
+**Current Status:** 🟡 In Progress - Users List UI Complete using Dummy Data
 
 ---
 
@@ -17,7 +17,9 @@
 
 ## DEPENDENCIES
 - [x] go_router (^17.0.1) - Navigation
-- [ ] sizer - Responsive design
+- [x] sizer (^2.0.15) - Responsive design
+- [x] dio (^5.9.0) - HTTP client
+- [x] package_info_plus (^9.0.0) - App metadata
 - [ ] flutter_bloc - State management
 - [ ] dio - HTTP client
 - [ ] hive_ce - Local storage
@@ -34,25 +36,27 @@
 ---
 
 ## HOME SCREEN - USERS LIST TAB
-- [ ] Custom AppBar with switcher (Users/Chat History)
-- [ ] AppBar hides on scroll down, shows on scroll up
-- [ ] Scrollable users list
-- [ ] Each user shows: Avatar initial + Name
-- [ ] FAB (+) button - only on Users tab
-- [ ] Add user dialog/bottomsheet
+- [x] Custom AppBar with switcher (Users/Chat History)
+- [x] AppBar hides on scroll down, shows on scroll up (Users tab only)
+- [x] Scrollable users list (mock data)
+- [x] Each user shows: Avatar (gradient) + Name
+- [x] FAB (+) button - only on Users tab
+- [ ] Add user dialog/bottomsheet (functional)
 - [ ] Show "User added: [Name]" snackbar
-- [ ] Store users locally
-- [ ] Preserve scroll position on tab switch
+- [ ] Store users locally with Hive
+- [x] Preserve scroll position on tab switch
 - [ ] Commit changes
 
 ---
 
 ## HOME SCREEN - CHAT HISTORY TAB
-- [ ] List of chat sessions
-- [ ] Each item: Avatar, Name, Last message, Timestamp
-- [ ] Tap chat → Open Chat Screen
-- [ ] Preserve scroll position on tab switch
-- [ ] No FAB on this tab
+- [x] List of chat sessions (mock data)
+- [x] Each item: Avatar, Name, Last message, Timestamp
+- [x] Unread message badges
+- [ ] Tap chat → Navigate to Chat Screen
+- [x] Preserve scroll position on tab switch
+- [x] No FAB on this tab
+- [x] AppBar always visible (no hide on scroll)
 - [ ] Commit changes
 
 ---
@@ -97,10 +101,13 @@
 ---
 
 ## UI POLISH
-- [ ] Match reference UI colors/design
-- [ ] Smooth animations
-- [ ] Proper spacing/padding
-- [ ] Test on real device
+- [x] Match reference UI colors/design
+- [x] Theme-based colors throughout
+- [x] Responsive sizing with Sizer
+- [x] AppConfig for consistent dimensions
+- [x] Smooth animations
+- [x] Proper spacing/padding
+- [x] Test on real device
 
 ---
 
@@ -120,23 +127,31 @@
 
 ### Tech Stack
 - **Navigation**: go_router ^17.0.1
-- **State Management**: ValueListenable (simple), will add Bloc if needed
-- **Storage**: Hive (fast, type-safe), sharedpreferences
+- **State Management**: ValueListenable + ScrollController
+- **Responsive Design**: sizer ^2.0.15 + custom AppConfig
+- **Storage**: Hive (to be implemented)
 - **API**: yet to be decided
-- **HTTP Client**: dio
+- **HTTP Client**: dio ^5.9.0
+- **App Info**: package_info_plus ^9.0.0
 
 ### Time Tracking
-- Setup & Documentation: ~1 hour
-- Navigation Setup: ~1 hour
-- Users List: _____ hours
-- Chat History: _____ hours
-- Chat Screen: _____ hours
-- Total Time: _____ hours
-
+- Setup & Documentation: ~15 mins
+- Navigation Setup: ~30 mins
+- Network Layer (Dio + Error Handler): ~15 mins
+- Responsive Design (AppConfig + Sizer): ~30 mins
+- Users List UI: ~30 mins
+- Chat History UI: ~30 mins
 ### Issues Faced
-- None so far
+- `SliverAppBar` with `snap: true` and `floating: true` scrolls as part of the page content, whereas we needed it to stay fixed and animate in/out smoothly with ease-in-out transitions based on scroll direction, only on the Users tab.
+- AppBar translucent background - Fixed with surfaceTintColor: Colors.transparent
+- Scroll detection on wrong tab - Fixed with conditional logic
+- Theme consistency - Resolved by using colorScheme throughout
 
 ### Features Implemented Beyond Requirements
 - ValueListenable for efficient state management
 - Proper error handling page
+- AppConfig with theme-aware responsive sizing
+- Network layer with DioErrorHandler
+- App metadata in API headers
+- Material Design 3 theme colors throughout
 - VS Code launch configurations

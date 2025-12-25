@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
               _currentIndex.value = newIndex;
             },
             type: BottomNavigationBarType.fixed,
-            selectedItemColor: Theme.of(context).colorScheme.primary,
+            selectedItemColor: Color(0xff005acf),
             unselectedItemColor: Colors.grey,
             items: const [
               BottomNavigationBarItem(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'core/routes/app_router.dart';
 
 void main() {
@@ -10,18 +11,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Mini Chat Application',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-        appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
-      ),
-      routerConfig: AppRouter.goRouter,
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return MaterialApp.router(
+          title: 'Mini Chat Application',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Color(0xff005acf),
+              brightness: Brightness.light,
+            ),
+            useMaterial3: true,
+            appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+          ),
+          routerConfig: AppRouter.goRouter,
+        );
+      },
     );
   }
 }
