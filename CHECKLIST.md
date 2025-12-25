@@ -2,23 +2,34 @@
 
 **Started:** 25/12/2025  
 **Deadline:** 27/12/2025
+**Current Status:** 🟡 In Progress - Navigation Complete
 
 ---
 
 ## SETUP
 - [x] Create Flutter project
 - [x] Setup Git repo + first commit
-- [ ] Add dependencies (dio, hive/shared_preferences, state management)
-- [ ] Review UI/UX reference materials
-- [ ] Choose API: ________________
+- [x] Add project documentation (README, CHANGELOG, CHECKLIST)
+- [x] Review UI/UX reference materials
+- [x] Choose API: yet to be decided
+
+---
+
+## DEPENDENCIES
+- [x] go_router (^17.0.1) - Navigation
+- [ ] sizer - Responsive design
+- [ ] flutter_bloc - State management
+- [ ] dio - HTTP client
+- [ ] hive_ce - Local storage
 
 ---
 
 ## MAIN NAVIGATION
-- [ ] Bottom navigation with 3 tabs
-- [ ] Home tab functional
-- [ ] Tab 2 & 3 placeholders
-- [ ] Commit changes
+- [x] Bottom navigation with 3 tabs
+- [x] ValueListenable for efficient state management
+- [x] Home tab functional (basic structure)
+- [x] Tab 2 & 3 placeholders
+- [x] Commit changes
 
 ---
 
@@ -105,8 +116,27 @@
 
 ---
 
-## 📝 NOTES
-- API chosen: ________________
-- State management: ________________
-- Issues faced: ________________
-- Time taken: ________________
+## NOTES & DECISIONS
+
+### Tech Stack
+- **Navigation**: go_router ^17.0.1
+- **State Management**: ValueListenable (simple), will add Bloc if needed
+- **Storage**: Hive (fast, type-safe), sharedpreferences
+- **API**: yet to be decided
+- **HTTP Client**: dio
+
+### Time Tracking
+- Setup & Documentation: ~1 hour
+- Navigation Setup: ~1 hour
+- Users List: _____ hours
+- Chat History: _____ hours
+- Chat Screen: _____ hours
+- Total Time: _____ hours
+
+### Issues Faced
+- None so far
+
+### Features Implemented Beyond Requirements
+- ValueListenable for efficient state management
+- Proper error handling page
+- VS Code launch configurations
