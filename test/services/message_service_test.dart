@@ -83,22 +83,6 @@ void main() {
       expect(lastMessage, isNull);
     });
 
-    test('should delete message successfully', () async {
-      final service = MessageService();
-
-      await service.sendMessage(userId: testUserId, message: 'Message 1');
-      await service.sendMessage(userId: testUserId, message: 'Message 2');
-
-      final messages = service.getMessagesForUser(testUserId);
-      final messageIdToDelete = messages.first.id;
-
-      await service.deleteMessage(testUserId, messageIdToDelete);
-      final remaining = service.getMessagesForUser(testUserId);
-
-      expect(remaining.length, 1);
-      expect(remaining.first.message, 'Message 2');
-    });
-
     test('should get all chat user IDs', () async {
       final service = MessageService();
 

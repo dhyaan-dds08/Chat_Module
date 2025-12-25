@@ -153,67 +153,8 @@ void main() {
     });
   });
 
-  group('DeleteMessage Event', () {
-    test('emits ChatLoaded after deleting message (messages remain)', () async {
-      const userId = 'test-user-delete';
-
-      await messageService.sendMessage(userId: userId, message: 'Message 1');
-      await messageService.sendMessage(userId: userId, message: 'Message 2');
-
-      final messages = messageService.getMessagesForUser(userId);
-      final messageIdToDelete = messages.first.id;
-
-      expectLater(
-        chatBloc.stream,
-        emits(
-          isA<ChatLoaded>().having(
-            (s) => s.messages.length,
-            'messages length',
-            1,
-          ),
-        ),
-      );
-
-      chatBloc.add(DeleteMessage(userId: userId, messageId: messageIdToDelete));
-    });
-
-    test('emits ChatEmpty after deleting last message', () async {
-      const userId = 'test-user-delete-last';
-
-      await messageService.sendMessage(userId: userId, message: 'Only message');
-
-      final messages = messageService.getMessagesForUser(userId);
-      final messageIdToDelete = messages.first.id;
-
-      expectLater(
-        chatBloc.stream,
-        emits(isA<ChatEmpty>().having((s) => s.userId, 'userId', userId)),
-      );
-
-      chatBloc.add(DeleteMessage(userId: userId, messageId: messageIdToDelete));
-    });
-
-    test('message is removed from storage', () async {
-      const userId = 'test-user-delete-storage';
-
-      await messageService.sendMessage(userId: userId, message: 'Message 1');
-      await messageService.sendMessage(userId: userId, message: 'Message 2');
-
-      final messages = messageService.getMessagesForUser(userId);
-      final messageIdToDelete = messages.first.id;
-
-      chatBloc.add(DeleteMessage(userId: userId, messageId: messageIdToDelete));
-
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      final remainingMessages = messageService.getMessagesForUser(userId);
-      expect(remainingMessages.length, 1);
-      expect(remainingMessages.first.message, 'Message 2');
-    });
-  });
-
   group('Multiple Events Sequence', () {
-    test('handles load -> send -> receive -> delete sequence', () async {
+    test('handles load -> send -> receive', () async {
       const userId = 'test-user-sequence';
 
       chatBloc.add(LoadChatMessages(userId));

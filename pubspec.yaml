@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.5.0+1
+version: 0.6.0+1
 
 environment:
   sdk: ^3.10.4
@@ -80,8 +80,8 @@ dev_dependencies:
   # Build System - Runs code generators (creates *.g.dart files from annotations)
   build_runner: ^2.10.4
 
-  # Splash Screen - Easily create native splash screens for iOS and Android
-  flutter_native_splash: ^2.4.7
+  # # Splash Screen - Easily create native splash screens for iOS and Android
+  # flutter_native_splash: ^2.4.7
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -131,16 +131,16 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-flutter_native_splash:
-  color: "#005acf"
+# flutter_native_splash:
+#   color: "#005acf"
   
-  image: assets/home4.png
+#   image: assets/home4.png
   
-  android_12:
-    image: assets/home4.png
-    color: "#005acf"
+#   android_12:
+#     image: assets/home4.png
+#     color: "#005acf"
   
-  ios_content_mode: center
+#   ios_content_mode: center
 
   
-  fullscreen: true
+#   fullscreen: true

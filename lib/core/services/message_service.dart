@@ -97,35 +97,8 @@ class MessageService {
     }
   }
 
-  Future<void> deleteMessage(String userId, String messageId) async {
-    try {
-      final messages = getMessagesForUser(userId);
-      messages.removeWhere((msg) => msg.id == messageId);
-
-      await _box.put(userId, messages.map((m) => m.toJson()).toList());
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   List<String> getAllChatUserIds() {
     return _box.keys.cast<String>().toList();
-  }
-
-  Future<void> deleteAllMessagesForUser(String userId) async {
-    try {
-      await _box.delete(userId);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<void> clearAllChats() async {
-    try {
-      await _box.clear();
-    } catch (e) {
-      rethrow;
-    }
   }
 
   bool hasMessages(String userId) {

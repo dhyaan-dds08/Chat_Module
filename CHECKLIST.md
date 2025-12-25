@@ -166,7 +166,6 @@
   - [x] LoadChatMessages event
   - [x] SendMessage event (with API)
   - [x] ReceiveMessage event
-  - [x] DeleteMessage event
   - [x] State transitions
   - [x] Multiple event sequences
 
@@ -202,7 +201,7 @@
 - [x] Graceful package_info_plus handling
 
 ### Test Metrics
-- [x] 78 total tests passing
+- [x] 74 total tests passing
 - [x] ~19 second execution time
 - [x] 100% pass rate
 - [x] All critical paths covered
@@ -221,9 +220,9 @@
 ---
 
 ## SUBMISSION
-- [ ] Clean code review
-- [ ] Multiple commits with good messages ✅ (ongoing)
-- [ ] Push to GitHub with tags (ongoing)
+- [x] Clean code review
+- [x] Multiple commits with good messages ✅ (ongoing)
+- [x] Push to GitHub with tags (ongoing)
 - [ ] Build release APK
 - [ ] Record demo video (show all features + bonus)
 - [ ] Upload APK + video to Google Drive
@@ -264,7 +263,11 @@
 - **uuid**: ^4.5.1 - RFC4122 UUID generation for unique IDs
 - **intl**: ^0.19.0 - Date/time formatting and internationalization
 - **sizer**: ^2.0.15 - Percentage-based responsive sizing
+- **flutter_svg**: ^2.0.10+1 - SVG rendering for custom icons and graphics
 
+#### Development Tools (dev_dependencies)
+- **flutter_native_splash**: ^2.4.7 - Native splash screen generation for Android, iOS, and Web
+  
 #### APIs Used
 - **Quotable API** (api.quotable.io) - Random quotes for receiver messages
 - **Dictionary API** (dictionaryapi.dev) - Word definitions, synonyms, antonyms
@@ -313,7 +316,7 @@
 - **Retry Logic**: Comprehensive error messages with retry functionality
 - **Lifecycle Management**: RouteObserver for state management
 - **Auto-refresh**: Timer-based updates for timestamps and online status
-- **Comprehensive Testing**: 78 tests covering unit, integration, and widgets
+- **Comprehensive Testing**: 74 tests covering unit, integration, and widgets
 - **Professional Branding**: Native splash screen and custom app icon
 - **Custom UI Icons**: SVG icons with smooth state transitions
 - **Clean Code**: No unused dependencies, no compiler warnings

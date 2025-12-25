@@ -50,16 +50,15 @@ All notable changes to this project will be documented in this file.
   - DictionaryModel: Full response structure, phonetics, meanings, definitions
   - ChatHistoryItem: Chat item creation with nullable lastMessage handling
 
-- **Service Tests** (3 files, ~30 tests)
+- **Service Tests** (3 files, ~22 tests)
   - UserService: CRUD operations, getAllUsers sorting, updateLastOnline, copyWith
-  - MessageService: Send/receive messages, getMessagesForUser, deleteMessage, getAllChatUserIds
+  - MessageService: Send/receive messages, getMessagesForUser, getAllChatUserIds
   - DictionaryService: Input validation (empty, invalid characters, spaces), helper methods
 
-- **BLoC Tests** (1 file, ~15 tests)
+- **BLoC Tests** (1 file, ~12 tests)
   - ChatBloc: Initial state, LoadChatMessages event (empty/loaded/error states)
   - SendMessage: User message + API reply handling
   - ReceiveMessage: Incoming message handling
-  - DeleteMessage: Remove message, handle empty state
   - State transitions and multiple event sequences
 
 - **Integration Tests** (1 file, ~10 tests)
@@ -85,7 +84,7 @@ All notable changes to this project will be documented in this file.
 - Clean test output with no verbose API logging
 
 ### Test Coverage Summary
-- **Total Tests**: 78
+- **Total Tests**: 74
 - **Pass Rate**: 100%
 - **Execution Time**: ~19 seconds
 - **Coverage**: Models, Services, BLoC, Widgets, API Integration
@@ -138,7 +137,7 @@ All notable changes to this project will be documented in this file.
 - **Chat Screen with Bloc State Management**
   - flutter_bloc (^8.1.6) for state management
   - equatable (^2.0.5) for value equality in states
-  - ChatBloc with events (LoadChatMessages, SendMessage, ReceiveMessage, DeleteMessage)
+  - ChatBloc with events (LoadChatMessages, SendMessage, ReceiveMessage)
   - ChatState (ChatInitial, ChatLoading, ChatLoaded, ChatEmpty, ChatError, MessageSending)
   
 - **Message Features**
@@ -195,7 +194,7 @@ All notable changes to this project will be documented in this file.
   - UserModel with UUID (uuid ^4.5.1), name, initial, lastOnline, createdAt
   - Computed property: isOnline (active within last 5 minutes)
   - lastSeenText: "Online", "Last seen 5m ago", "Last seen 2h ago"
-  - UserService with CRUD operations (add, get, update, delete)
+  - UserService with CRUD operations (add, get, update)
   - updateLastOnline() method for activity tracking
   - Add user dialog with TextField and validation
   - Users sorted by creation date (newest first)

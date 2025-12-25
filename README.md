@@ -12,7 +12,7 @@ This is a chat application with the following features:
 
 ## Development Progress
 
-- **Current Phase**: 🟢 Chat Screen Complete with API Integration
+- **Current Phase**: Complete - Ready for Submission (v1.0.0)
 - Track the implementation progress in [CHECKLIST.md](CHECKLIST.md)
 - View detailed change history in [CHANGELOG.md](CHANGELOG.md)
 
@@ -127,7 +127,7 @@ lib/
 ### Currently Implemented
 
 #### Navigation
-**go_router (^17.0.1)** ✅
+**go_router (^17.0.1)** 
 
 Why go_router over traditional Navigator?
 
@@ -145,12 +145,12 @@ Implementation:
 Alternative Considered: Traditional Navigator 2.0 was rejected due to verbose API and lack of declarative structure.
 
 #### State Management
-**ValueListenable** ✅
+**ValueListenable**
 - Efficient state updates with minimal rebuilds
 - Perfect for simple state like tab switching
 - Will integrate with Bloc for complex features
 
-**flutter_bloc (^8.1.6) + equatable (^2.0.5)** ✅
+**flutter_bloc (^8.1.6) + equatable (^2.0.5)** 
 
 Why Bloc over other solutions?
 - **Separation of concerns**: Business logic separated from UI
@@ -161,7 +161,7 @@ Why Bloc over other solutions?
 
 Implementation:
 - ChatBloc manages message sending/receiving
-- Events: LoadChatMessages, SendMessage, ReceiveMessage, DeleteMessage
+- Events: LoadChatMessages, SendMessage, ReceiveMessage
 - States: ChatInitial, ChatLoading, ChatLoaded, ChatEmpty, ChatError
 - Provided at route level in app_router.dart
 
@@ -221,27 +221,186 @@ Implementation:
 - Services layer (UserService, MessageService) for abstraction
 
 #### Code Generation
-**build_runner (^2.10.4) + json_serializable (^6.11.3)** ✅
+**build_runner (^2.10.4) + json_serializable (^6.11.3)**
 
 - Generates JSON serialization code (*.g.dart files)
 - Run: `flutter pub run build_runner build --delete-conflicting-outputs`
 - Models: UserModel, MessageModel, QuoteModel
 
+#### Development Tools (dev_dependencies)
+**flutter_native_splash (^2.4.7)** ✅
+
+Why flutter_native_splash?
+- **Native Implementation**: Generates platform-native splash screens (not Flutter widgets)
+- **Zero Delay**: Displays immediately on app launch before Flutter loads
+- **Multi-Platform**: Automatic generation for Android, iOS, and Web
+- **Android 12+ Support**: Handles new Splash Screen API automatically
+- **Easy Configuration**: Single YAML configuration for all platforms
+
+Features:
+- Brand color background (#005acf)
+- Custom logo with proper scaling
+- Full-screen mode (hides status bar)
+- Android 12+ adaptive icon background
+- Platform-specific content modes (scaleAspectFit for iOS, center for Android)
+- No distortion across different screen sizes
+
+**flutter_launcher_icons (^0.14.1)** ✅
+
+Why automated icon generation?
+- **All Sizes**: Generates all required platform icon sizes automatically
+- **Adaptive Icons**: Android 8.0+ adaptive icon support
+- **Consistent**: Single source image for all platforms
+- **Time-Saving**: Manual generation of 20+ icon sizes avoided
+
+Features:
+- 1024×1024 source icon
+- Android adaptive icons with brand background
+- iOS AppIcon set complete
+- Web favicon and manifest icons
+- All densities (mdpi to xxxhdpi)
+
 #### Unique IDs
-**uuid (^4.5.1)** ✅
+**uuid (^4.5.2)** 
 
 - Generates RFC4122 UUIDs for users and messages
 - v4 (random) UUIDs for global uniqueness
 - Better than timestamps for distributed systems
 
 #### Date Formatting
-**intl (^0.19.0)** ✅
+**intl (^0.19.0)** 
 
 - Format timestamps: "2:30 PM", "Mon 2:30 PM", "Dec 25, 2:30 PM"
 - 12-hour format with AM/PM
 - Relative time: "Just now", "5 mins ago", "2 hours ago"
 
+#### UI Components
+**flutter_svg (^2.2.3)** ✅
+
+Why flutter_svg?
+- **Vector Graphics**: Scalable icons without quality loss
+- **Small File Size**: SVG files are smaller than PNGs
+- **Theme Integration**: Easy color customization with ColorFilter
+- **Performance**: Efficient rendering on all screen sizes
+- **Flexibility**: Can be styled dynamically based on state
+
+Implementation:
+- Custom home icon in bottom navigation
+- Selected/unselected state colors
+- ColorFilter.mode with BlendMode.srcIn for proper color application
+- 24×24 logical pixel sizing
+
+Alternative Considered: PNG icons were rejected due to scaling issues and larger file sizes.
+
 ## Current Features
+
+### Completed (v0.6.0 - Branding & Visual Identity)
+
+#### Native Splash Screen
+- Professional native splash screen implementation
+- Brand color background: #005acf
+- Custom splash logo (1024×1024 standard, 1152×1152 Android 12+)
+- Full-screen mode across all platforms
+- Platform-specific optimizations:
+  - Android: Center gravity, Android 12+ Splash Screen API
+  - iOS: scaleAspectFit content mode
+  - Web: CSS-based splash screen
+- No distortion or cropping on any device
+- Smooth transition to app launch
+- Generated using flutter_native_splash package
+
+#### Custom App Icon
+- Professional app icon matching brand identity
+- Generated for all platforms and densities:
+  - Android: All densities (mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi)
+  - Android 8.0+: Adaptive icons with #005acf background
+  - iOS: All required sizes (20pt to 1024pt) in AppIcon.appiconset
+  - Web: Favicon (16×16, 32×32) and manifest icons (192×192, 512×512)
+- Consistent visual identity across launcher and in-app
+- 1024×1024 source image
+- Manual generation using online tools
+
+#### Custom UI Icons
+- Custom SVG home icon in bottom navigation
+- Smooth color transitions for state changes
+- Selected state: Brand primary color (#005acf)
+- Unselected state: Grey tint (Colors.grey.shade600)
+- Proper SVG rendering with ColorFilter.mode and BlendMode.srcIn
+- 24×24 logical pixel sizing
+- Matches overall brand aesthetic
+
+#### Documentation Updates
+- Updated CHANGELOG.md with v0.6.0 features
+- Updated README.md with branding section
+- Updated CHECKLIST.md with branding tasks
+- Added tech stack documentation for new packages
+
+### Completed (v0.5.1 - Comprehensive Testing Suite)
+
+#### Test Infrastructure
+- **74 tests** with 100% pass rate
+- Execution time: ~19 seconds
+- No mocking - real integration testing approach
+- Clean test output with disabled logging
+- Unique Hive paths per test file to prevent conflicts
+
+#### Unit Tests (~70 tests)
+**Model Tests** (5 files, ~25 tests)
+- UserModel: JSON serialization, initial generation, lastSeenText formatting
+- MessageModel: Sent/received creation, unique IDs, JSON serialization
+- QuoteModel: API response deserialization with required ID field
+- DictionaryModel: Full response structure, phonetics, meanings, definitions
+- ChatHistoryItem: Chat item creation with nullable lastMessage handling
+
+**Service Tests** (3 files, ~22 tests)
+- UserService: CRUD operations, getAllUsers sorting, updateLastOnline, copyWith
+- MessageService: Send/receive messages, getMessagesForUser, getAllChatUserIds
+- DictionaryService: Input validation (empty, invalid characters, spaces), helper methods
+
+**BLoC Tests** (1 file, ~12 tests)
+- ChatBloc: Initial state verification
+- LoadChatMessages: Empty/loaded/error states, message persistence
+- SendMessage: User message + API reply handling with real HTTP calls
+- ReceiveMessage: Incoming message storage
+- State transitions: userId preservation, loading→loaded flow
+- Multiple event sequences: Complex workflows and state consistency
+
+#### Integration Tests (~8 tests)
+**Dictionary API Integration**
+- Valid word lookup with real API calls (dictionaryapi.dev)
+- Invalid word error handling
+- Input validation (empty, spaces, special characters)
+- Synonyms and antonyms extraction
+
+**Quote API Integration**
+- Random quote fetching (dummyjson.com)
+- Multiple API calls to verify different quotes
+- Error handling and fallback mechanisms
+
+**Full Flow Integration**
+- Complete user workflow: User creation → Message sending → API reply
+- Word lookup flow: Quote fetch → Word extraction → Dictionary lookup
+- Real API integration without mocks
+
+#### Widget Tests (~5 tests)
+- HomeScreen: Basic rendering, FAB visibility, tab navigation
+- Component visibility based on tab state
+- Sizer initialization for responsive design
+
+#### Testing Approach
+- **Integration-First**: Real Hive storage, real API calls
+- **No Mocking**: Tests use actual services and APIs for better confidence
+- **Isolated**: Each test file uses unique Hive paths
+- **Clean Output**: ApiClient._isInTestMode() disables verbose logging
+- **Fast Execution**: Despite real API calls, completes in ~19 seconds
+- **Type-Safe**: Proper error handling and state verification
+
+#### Test Configuration
+- Removed TestWidgetsFlutterBinding from API tests (blocks HTTP)
+- ApiClient.reset() for test isolation
+- Graceful package_info_plus handling in test environment
+- Increased wait times for API-dependent tests (3 seconds)
+- All API integration tests removed mockito/mocktail dependencies
 ### Completed (v0.5.0 - BONUS)
 
 #### Word Lookup Feature (BONUS)
@@ -321,10 +480,6 @@ Implementation:
 - Smooth animations (200ms transitions)
 - Custom scroll behavior
 
-### 🚧 In Progress
-- None - core features complete!
-- Unit Tests
-
 
 ## Getting Started
 ```bash
@@ -343,13 +498,13 @@ flutter run
 
 ## Testing 🧪
 
-This project includes a comprehensive test suite with **78 tests** covering all critical paths.
+This project includes a comprehensive test suite with **74 tests** covering all critical paths.
 
 ### Test Structure
 ```
 test/
 ├── models/              # Unit tests for data models (5 files, ~25 tests)
-├── services/            # Unit tests for business logic (3 files, ~30 tests)
+├── services/            # Unit tests for business logic (3 files, ~22 tests)
 ├── bloc/                # BLoC state management tests (1 file, ~15 tests)
 ├── integration/         # API integration tests (1 file, ~10 tests)
 └── widget_test.dart     # Widget/UI tests (~5 tests)
@@ -387,7 +542,7 @@ flutter test test/integration/      # Integration tests only
 
 ### Test Results
 ```
-Total Tests: 78
+Total Tests: 74
 Pass Rate: 100%
 Execution Time: ~19 seconds
 ```
@@ -412,7 +567,7 @@ This project follows Flutter testing best practices:
 ## Assignment Details
 
 **Duration**: 48-72 hours  
-**Status**: 🟡 In Progress - Phase 2: Users List Implementation  
+**Status**: 🟢 Chat Screen Complete with API Integration
 **Started**: December 25, 2024  
 **Target Completion**: December 27, 2024  
 **Submitted to**: MySivi AI
@@ -426,4 +581,6 @@ This project follows Flutter testing best practices:
 - ✅ **v0.3.0** - Hive storage, real user/chat data, API setup
 - ✅ **v0.4.0** - Chat screen with Bloc, messages, API integration
 - ✅ **v0.5.0** - Word lookup feature (BONUS) + utilities
-- 📋 **v1.0.0** - Final polish and submission
+- ✅ **v0.5.1** - Unit, widget and Integration Tests
+- ✅ **v0.6.0** - Native splash screen and app icon + UI enhancement wrt ui provided
+- ✅ **v1.0.0** - Final Review and Submission

@@ -15,7 +15,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<LoadChatMessages>(_onLoadChatMessages);
     on<SendMessage>(_onSendMessage);
     on<ReceiveMessage>(_onReceiveMessage);
-    on<DeleteMessage>(_onDeleteMessage);
   }
 
   Future<void> _onLoadChatMessages(
@@ -86,25 +85,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(ChatLoaded(messages: updatedMessages, userId: event.userId));
     } catch (e) {
       emit(ChatError('Failed to receive message: ${e.toString()}'));
-    }
-  }
-
-  Future<void> _onDeleteMessage(
-    DeleteMessage event,
-    Emitter<ChatState> emit,
-  ) async {
-    try {
-      await _messageService.deleteMessage(event.userId, event.messageId);
-
-      final updatedMessages = _messageService.getMessagesForUser(event.userId);
-
-      if (updatedMessages.isEmpty) {
-        emit(ChatEmpty(event.userId));
-      } else {
-        emit(ChatLoaded(messages: updatedMessages, userId: event.userId));
-      }
-    } catch (e) {
-      emit(ChatError('Failed to delete message: ${e.toString()}'));
     }
   }
 }
