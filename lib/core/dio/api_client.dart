@@ -48,8 +48,14 @@ class ApiClient {
         'X-Platform': Platform.operatingSystem,
       });
     } catch (e) {
-      debugPrint('Failed to initialize app headers: $e');
+      if (kDebugMode) debugPrint('Failed to initialize app headers: $e');
     }
+  }
+
+  static Future<Dio> getApiClient() async {
+    final instance = ApiClient();
+    await instance._initializeHeaders();
+    return instance._dio;
   }
 
   Dio get dio => _dio;

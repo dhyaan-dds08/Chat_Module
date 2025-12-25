@@ -2,7 +2,7 @@
 
 **Started:** 25/12/2025  
 **Deadline:** 27/12/2025
-**Current Phase**: 🟢 Navigation & Routing Complete
+**Current Phase**: 🟢 Chat Screen Complete with API Integration
 
 ---
 
@@ -17,13 +17,15 @@
 
 ## DEPENDENCIES
 - [x] go_router (^17.0.1) - Navigation
-- [x] sizer (^2.0.15) - Responsive design
+- [x] sizer (^3.1.3) - Responsive design
 - [x] dio (^5.9.0) - HTTP client
 - [x] package_info_plus (^9.0.0) - App metadata
-- [ ] flutter_bloc - State management
-- [ ] dio - HTTP client
-- [ ] hive_ce - Local storage
-
+- [x] flutter_bloc (^8.1.6) - State management
+- [x] equatable (^2.0.5) - Value equality
+- [x] hive_ce (^2.16.0) - Local storage
+- [x] uuid (^4.5.1) - Unique IDs
+- [x] intl (^0.19.0) - Date formatting
+- [x] path_provider (^2.1.4) - App directories
 ---
 
 ## MAIN NAVIGATION
@@ -38,52 +40,68 @@
 ## HOME SCREEN - USERS LIST TAB
 - [x] Custom AppBar with switcher (Users/Chat History)
 - [x] AppBar hides on scroll down, shows on scroll up (Users tab only)
-- [x] Scrollable users list (mock data)
-- [x] Each user shows: Avatar (gradient) + Name
+- [x] Scrollable users list (real data from Hive)
+- [x] Each user shows: Avatar (gradient) + Name + Online Status
 - [x] FAB (+) button - only on Users tab
-- [ ] Add user dialog/bottomsheet (functional)
-- [ ] Show "User added: [Name]" snackbar
-- [ ] Store users locally with Hive
+- [x] Add user dialog/bottomsheet (functional)
+- [x] Show "User added: [Name]" snackbar
+- [x] Store users locally with Hive
 - [x] Preserve scroll position on tab switch
-- [ ] Commit changes
+- [x] Empty state when no users
+- [x] Commit changes (v0.3.0)
 
 ---
 
 ## HOME SCREEN - CHAT HISTORY TAB
-- [x] List of chat sessions (mock data)
+- [x] List of chat sessions (real data from Hive)
 - [x] Each item: Avatar, Name, Last message, Timestamp
-- [x] Unread message badges
-- [ ] Tap chat → Navigate to Chat Screen
+- [x] Unread message badges (random 0-5)
+- [x] Tap chat → Navigate to Chat Screen
 - [x] Preserve scroll position on tab switch
 - [x] No FAB on this tab
 - [x] AppBar always visible (no hide on scroll)
-- [ ] Commit changes
+- [x] Shows only users with messages
+- [x] Sorted by most recent message
+- [x] Empty state when no chats
+- [x] Commit changes (v0.3.0)
 
 ---
 
 ## CHAT SCREEN
-- [ ] AppBar with user name
-- [ ] **Sender messages** (right side):
-  - [ ] Blue bubble
-  - [ ] Avatar initial
-  - [ ] Send from bottom input
-- [ ] **Receiver messages** (left side):
-  - [ ] Gray bubble
-  - [ ] Avatar initial
-  - [ ] Fetch from API
-- [ ] Bottom text field + send button
-- [ ] Save messages locally
-- [ ] Update chat history after messages sent
-- [ ] Commit changes
+- [x] AppBar with user name and online status
+- [x] Back button navigation
+- [x] **Sender messages** (right side):
+  - [x] Blue bubble (colorScheme.primary)
+  - [x] Avatar initial
+  - [x] Send from bottom input
+  - [x] Timestamps with AM/PM
+- [x] **Receiver messages** (left side):
+  - [x] Gray bubble (surfaceContainerHighest)
+  - [x] Avatar initial
+  - [x] Fetch from Quotable API
+  - [x] Auto-reply after sending message
+- [x] Bottom text field + send button
+- [x] Multi-line expanding TextField
+- [x] Save messages locally with Hive
+- [x] Update lastOnline timestamp
+- [x] Empty state: "No messages yet"
+- [x] Loading state while fetching messages
+- [x] Error handling with DioException
+- [x] Auto-scroll to bottom on new messages
+- [x] Timestamps auto-update every 30 seconds
+- [x] Bloc state management
+- [x] Commit changes (v0.4.0)
 
 ---
 
 ## ERROR HANDLING
-- [ ] Handle empty states (no users, no chats)
-- [ ] Handle API failures with retry
-- [ ] Handle network errors
-- [ ] Show loading indicators
-- [ ] User-friendly error messages
+- [x] Handle empty states (no users, no chats, no messages)
+- [x] Handle API failures with fallback messages
+- [x] Handle network errors with DioErrorHandler
+- [x] Show loading indicators (CircularProgressIndicator)
+- [x] User-friendly error messages
+- [x] Production-safe logging (developer.log)
+- [x] User validation (redirect if not found)
 
 ---
 
@@ -141,6 +159,11 @@
 - Responsive Design (AppConfig + Sizer): ~30 mins
 - Users List UI: ~30 mins
 - Chat History UI: ~30 mins
+- Hive Setup & User Management: ~1 hours
+- Message System & API Integration: ~1 hours
+- Chat Screen UI & Bloc: ~1 hours
+- Online Status & Auto-refresh: ~1 hour
+
 ### Issues Faced
 - `SliverAppBar` with `snap: true` and `floating: true` scrolls as part of the page content, whereas we needed it to stay fixed and animate in/out smoothly with ease-in-out transitions based on scroll direction, only on the Users tab.
 - AppBar translucent background - Fixed with surfaceTintColor: Colors.transparent

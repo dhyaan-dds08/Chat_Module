@@ -12,7 +12,7 @@ This is a chat application with the following features:
 
 ## Development Progress
 
-- **Current Phase**: 🟢 Navigation & Routing Complete
+- **Current Phase**: 🟢 Chat Screen Complete with API Integration
 - Track the implementation progress in [CHECKLIST.md](CHECKLIST.md)
 - View detailed change history in [CHANGELOG.md](CHANGELOG.md)
 
@@ -28,34 +28,63 @@ lib/
 ├── core/                          # Core functionality and configuration
 │   ├── config/
 │   │   └── app_config.dart       # Responsive sizing and theme-aware config
+│   ├── constants/
+│   │   └── api_url.dart          # API endpoint constants
 │   ├── dio/
-│   │   └── api_client.dart       # Dio HTTP client setup and interceptors
+│   │   ├── api_client.dart       # Dio singleton with headers
+│   │   └── dio_error.dart        # DioException error handling
 │   └── routes/
-│       └── app_router.dart       # GoRouter configuration with ShellRoute
+│       └── app_router.dart       # GoRouter configuration with ShellRoute + BlocProvider
+│   ├── services/
+│   │   ├── message_service.dart  # Message CRUD + API integration
+│   │   └── user_service.dart     # User CRUD + chat history
 │
 ├── data/
 │   └── model/
 │       ├── quote_model.dart      # Quote data model
-│       └── quote_model.g.dart    # Generated JSON serialization (auto-generated)
+│       ├── chat_history_item.dart    # ChatHistory view model
+│       ├── message_model.dart        # Message with UUID
+│       ├── message_model.g.dart      # Generated JSON
+│       ├── quote_model.g.dart        # Generated JSON
+│       ├── user_model.dart           # User with lastOnline
+│       └── user_model.g.dart         # Generated JSON
 │
-├── screens/                       # All application screens
-│   ├── home_screen.dart          # Users List + Chat History tabs
-│   ├── main_screen.dart          # Bottom navigation wrapper (ShellRoute)
-│   └── placeholder_screen.dart   # Offers/Settings placeholder screens
+├── features/
+│   └── chat/
+│       └── bloc/
+│           ├── chat_bloc.dart        # Chat business logic
+│           ├── chat_event.dart       # Chat events
+│           └── chat_state.dart       # Chat states
 │
-└── main.dart                      # App entry point
+├── screens/
+│   ├── chat_screen.dart          # Chat UI with messages
+│   ├── home_screen.dart          # Users List + Chat History
+│   ├── main_screen.dart          # Bottom navigation
+│   └── placeholder_screen.dart   # Offers/Settings
+│
+└── main.dart                      # App entry point + Hive init
 ```
 
 ### Key Files
 
 | File | Purpose |
 |------|---------|
-| `app_config.dart` | Centralized responsive sizing (AppConfig.avatarSize, AppConfig.w(), AppConfig.h()) |
-| `app_router.dart` | Navigation configuration with ShellRoute for persistent bottom nav |
-| `api_client.dart` | Dio client with interceptors, headers, and error handling |
-| `quote_model.dart` | JSON-serializable model for API responses |
-| `home_screen.dart` | Custom AppBar with tab switcher, Users List, Chat History |
-| `main_screen.dart` | Bottom navigation that persists across routes |
+| `app_config.dart` | Centralized responsive sizing (AppConfig.avatarSize, config.w(), config.h()) |
+| `app_router.dart` | GoRouter with ShellRoute, nested routes, and BlocProvider at route level |
+| `api_client.dart` | Dio singleton with interceptors, headers, and initialization |
+| `dio_error.dart` | DioException handling for Dio 5.x (all exception types) |
+| `api_url.dart` | API endpoint constants (Quotable, DummyJSON, JSONPlaceholder) |
+| `user_service.dart` | User CRUD operations + chat history generation |
+| `message_service.dart` | Message CRUD operations + API integration (fetchApiReply) |
+| `user_model.dart` | User with UUID, lastOnline, computed isOnline property |
+| `message_model.dart` | Message with UUID, timestamp, isSender flag |
+| `quote_model.dart` | API response model for Quotable API |
+| `chat_history_item.dart` | View model combining UserModel + MessageModel for chat list |
+| `chat_bloc.dart` | Bloc managing chat state (send/receive messages) |
+| `home_screen.dart` | Users List + Chat History tabs with RouteAware |
+| `chat_screen.dart` | Chat UI with Bloc, message bubbles, auto-scroll |
+| `main_screen.dart` | Bottom navigation wrapper (ShellRoute child) |
+| `placeholder_screen.dart` | Simple placeholder for Offers and Settings tabs (shows tab name) |
 
 ## Tech Stack
 
@@ -88,6 +117,21 @@ Alternative Considered: Traditional Navigator 2.0 was rejected due to verbose AP
 - Efficient state updates with minimal rebuilds
 - Perfect for simple state like tab switching
 - Will integrate with Bloc for complex features
+
+**flutter_bloc (^8.1.6) + equatable (^2.0.5)** ✅
+
+Why Bloc over other solutions?
+- **Separation of concerns**: Business logic separated from UI
+- **Testability**: Easy to test blocs independently
+- **Predictable state**: Clear state transitions
+- **BlocProvider**: Dependency injection at route level
+- **BlocConsumer**: Combined builder + listener for side effects
+
+Implementation:
+- ChatBloc manages message sending/receiving
+- Events: LoadChatMessages, SendMessage, ReceiveMessage, DeleteMessage
+- States: ChatInitial, ChatLoading, ChatLoaded, ChatEmpty, ChatError
+- Provided at route level in app_router.dart
 
 #### Networking
 **dio (^5.9.0)** ✅
@@ -128,50 +172,106 @@ Features:
 - Automatic text scaling based on user preferences
 - Easy maintenance and consistent UI across screens
 
-### To Be Implemented
+#### Local Storage
+**hive_ce (^2.16.0) + JSON serialization** ✅
 
-- **State Management**: flutter_bloc - For complex state (users, chats, messages)
-- **Local Storage**: hive_ce and SharedPreferences - Persistent data storage
-- **Code Generation**: build_runner, json_serializable
+Why Hive over SharedPreferences or SQLite?
+- **Fast**: NoSQL key-value store, faster than SQLite
+- **Lightweight**: No native dependencies
+- **Type-safe**: Works with json_serializable models
+- **Simple API**: No complex queries needed
+- **Cross-platform**: Works on all Flutter platforms
+
+Implementation:
+- Two boxes: 'users' (user data) and 'chats' (messages by userId)
+- JSON serialization (no HiveObject/HiveField annotations)
+- Initialized in main.dart before app starts
+- Services layer (UserService, MessageService) for abstraction
+
+#### Code Generation
+**build_runner (^2.10.4) + json_serializable (^6.11.3)** ✅
+
+- Generates JSON serialization code (*.g.dart files)
+- Run: `flutter pub run build_runner build --delete-conflicting-outputs`
+- Models: UserModel, MessageModel, QuoteModel
+
+#### Unique IDs
+**uuid (^4.5.1)** ✅
+
+- Generates RFC4122 UUIDs for users and messages
+- v4 (random) UUIDs for global uniqueness
+- Better than timestamps for distributed systems
+
+#### Date Formatting
+**intl (^0.19.0)** ✅
+
+- Format timestamps: "2:30 PM", "Mon 2:30 PM", "Dec 25, 2:30 PM"
+- 12-hour format with AM/PM
+- Relative time: "Just now", "5 mins ago", "2 hours ago"
 
 ## Current Features
 
-### ✅ Completed
-- **Navigation System**
-  - Type-safe routing with go_router
-  - ShellRoute with persistent bottom navigation
-  - Chat screen routing with user ID parameters
-  - 404 error page with "Go Home" button
-  
-- **Home Screen (v0.2.0)**
-  - Custom tab switcher (Users List / Chat History)
-  - Scroll-aware AppBar with smooth animations
-  - Scroll position preservation per tab
-  
-- **Users List**
-  - 20 mock users with gradient avatars
-  - Online status indicators
-  - Navigate to chat on tap
-  - FAB for adding users (Users tab only)
-  
-- **Chat History**
-  - Mock chat sessions with timestamps
-  - Unread message badges
-  - Last message preview
+### ✅ Completed (v0.4.0)
+
+#### Navigation & Routing
+- Type-safe routing with go_router and ShellRoute
+- Persistent bottom navigation across screens
+- Chat screen routing with user ID validation
+- 404 error page with navigation
+- RouteAware mixin for lifecycle awareness
+
+#### User Management (v0.3.0)
+- Add users with dialog and validation
+- Users stored in Hive with UUID
+- Real-time online status (last seen < 5 minutes)
+- Last seen text: "Online", "Last seen 5m ago"
+- Gradient circular avatars
+- Empty state when no users
+- Auto-refresh every 30 seconds
+
+#### Chat History (v0.3.0)
+- Shows only users with messages
+- Real last message preview
+- Sorted by most recent message
+- Random unread count badges (0-5)
+- Timestamps with relative formatting
+- Empty state when no chats
+- Navigate to chat with state refresh
+
+#### Chat Screen (v0.4.0)
+- Bloc state management (ChatBloc)
+- Sender messages (right, blue bubbles)
+- Receiver messages (left, grey bubbles)
+- Auto-reply from Quotable API
+- Message timestamps with auto-update (30s timer)
+- 12-hour time format with AM/PM
+- Multi-line expanding text input
+- Empty state: "No messages yet"
+- Loading state with spinner
+- Error handling with fallback messages
+- Auto-scroll to bottom
+- Updates lastOnline on open
+- Messages persist in Hive
+
+#### Theme System
+- ColorScheme.fromSeed (seed: 0xff005acf)
+- Automatic light/dark theme generation
+- Consistent colors throughout app
+- Bottom nav with filled icons when selected
+
+#### Responsive Design
+- Percentage-based sizing with sizer
+- AppConfig for all dimensions
+- Theme-aware text styles
+- Smooth animations (200ms transitions)
+- Custom scroll behavior
 
 ### 🚧 In Progress
-- Users List screen with custom AppBar
-- Chat History view
-- Add users with FAB
-- Chat screen UI with message bubbles
-- API integration for receiver messages
+- None - core features complete!
 
-### 📋 Planned
-
-- Chat screen with sender/receiver messages
-- API integration for receiver messages
-- Local data persistence
-- Word dictionary on long-press (bonus)
+### 📋 Planned (Bonus)
+- Word dictionary on long-press
+- Unit Tests
 
 
 ## Getting Started
@@ -202,8 +302,7 @@ flutter run
 - ✅ **v0.0.1** - Project setup and documentation
 - ✅ **v0.1.0** - Navigation system complete
 - ✅ **v0.2.0** - Users List with dummy data
-- ✅ **v0.2.1** - Navigation system with go_router
-- 🚧 **v0.3.0** - Rendering local data from hive for user list and chat history, and attaching fab to create new user.
-- 🚧 **v0.4.0** - Chat Screen UI (in progress)
-- 📋 **v0.5.0** - API integration & message functionality
-- 📋 **v1.0.0** - Final submission
+- ✅ **v0.2.1** - Navigation with go_router
+- ✅ **v0.3.0** - Hive storage, real user/chat data, API setup
+- ✅ **v0.4.0** - Chat screen with Bloc, messages, API integration
+- 📋 **v1.0.0** - Final polish and submission

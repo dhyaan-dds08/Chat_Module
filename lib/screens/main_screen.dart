@@ -14,13 +14,16 @@ class MainScreen extends StatelessWidget {
         currentIndex: _calculateSelectedIndex(context),
         onTap: (index) => _onItemTapped(index, context),
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.local_offer),
+            icon: Icon(Icons.chat_bubble_outline),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.local_offer_outlined),
             label: 'Offers',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.settings_outlined),
             label: 'Settings',
           ),
         ],

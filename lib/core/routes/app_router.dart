@@ -1,9 +1,14 @@
-import 'package:chat_module/screens/main_screen.dart';
-import 'package:chat_module/screens/placeholder_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/chat/bloc/chat_bloc.dart';
+import '../../features/chat/bloc/chat_event.dart';
+import '../../screens/chat_screen.dart';
 import '../../screens/home_screen.dart';
+import '../../screens/main_screen.dart';
+import '../../screens/placeholder_screen.dart';
+import '../services/message_service.dart';
 
 class AppRouter {
   static final goRouter = GoRouter(
@@ -11,19 +16,23 @@ class AppRouter {
     routes: [
       ShellRoute(
         builder: (context, state, child) {
-          return MainScreen(child: child); // MainScreen has bottom nav
+          return MainScreen(child: child);
         },
         routes: [
           GoRoute(
             path: '/home',
             builder: (context, state) => const HomeScreen(),
             routes: [
-              // Nested route - keeps bottom nav visible
               GoRoute(
                 path: 'chat/:userId',
                 builder: (context, state) {
-                  final userId = state.pathParameters['userId']!;
-                  return PlaceholderScreen(tabName: 'Chat');
+                  final String userId = state.pathParameters['userId'] ?? '';
+                  return BlocProvider(
+                    create: (context) =>
+                        ChatBloc(messageService: MessageService())
+                          ..add(LoadChatMessages(userId)),
+                    child: ChatScreen(userId: userId),
+                  );
                 },
               ),
             ],

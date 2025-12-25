@@ -1,5 +1,3 @@
-// lib/core/config/app_config.dart
-
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -26,6 +24,8 @@ class AppConfig {
   static double get smallIconSize => 1.5.h;
   static double get mediumIconSize => 3.h;
   static double get largeIconSize => 6.h;
+
+  static const double buttonHeight = 48.0;
 
   TextStyle? get displayLarge => Theme.of(context).textTheme.displayLarge;
   TextStyle? get displayMedium => Theme.of(context).textTheme.displayMedium;

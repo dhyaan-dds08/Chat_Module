@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import '../core/config/app_config.dart';
+import '../core/services/user_service.dart';
+import '../main.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,23 +14,29 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with RouteAware {
   final ValueNotifier<int> _selectedTab = ValueNotifier(0);
   final ScrollController _usersScrollController = ScrollController();
   final ValueNotifier<bool> _showAppBar = ValueNotifier(true);
+  final UserService _userService = UserService();
 
   late AppConfig config;
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
     _usersScrollController.addListener(_onUsersScroll);
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     config = AppConfig(context);
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   void _onUsersScroll() {
@@ -45,12 +55,77 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _showAddUserDialog() {
+    final TextEditingController nameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add New User'),
+        content: TextField(
+          controller: nameController,
+          decoration: InputDecoration(
+            hintText: 'Enter user name',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppConfig.mediumRadius),
+            ),
+          ),
+          autofocus: true,
+          textCapitalization: TextCapitalization.words,
+          onSubmitted: (value) {
+            if (value.trim().isNotEmpty) {
+              _addUser(nameController.text.trim());
+              Navigator.pop(context);
+            }
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (nameController.text.trim().isNotEmpty) {
+                _addUser(nameController.text.trim());
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _addUser(String name) async {
+    await _userService.addUser(name);
+    if (mounted) {
+      setState(() {});
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('User "$name" added'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _selectedTab.dispose();
     _usersScrollController.dispose();
     _showAppBar.dispose();
+    _refreshTimer?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -113,13 +188,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           floatingActionButton: selectedTab == 0
               ? FloatingActionButton(
-                  backgroundColor: Color(0xff005acf),
-                  shape: CircleBorder(),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Add User tapped')),
-                    );
-                  },
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  shape: const CircleBorder(),
+                  onPressed: _showAddUserDialog,
                   child: Icon(
                     Icons.add,
                     size: AppConfig.mediumIconSize,
@@ -195,6 +266,37 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildUsersListTab() {
+    final users = _userService.getAllUsers();
+
+    if (users.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.people_outline,
+              size: config.h(8),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            SizedBox(height: AppConfig.mediumSpacing),
+            Text(
+              'No users yet',
+              style: config.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            SizedBox(height: AppConfig.smallSpacing),
+            Text(
+              'Tap the + button to add your first user',
+              style: config.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return ListView.separated(
       separatorBuilder: (context, index) => Divider(
         height: AppConfig.smallSpacing,
@@ -202,9 +304,15 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       controller: _usersScrollController,
       key: const PageStorageKey<String>('usersListKey'),
-      padding: EdgeInsets.all(AppConfig.screenPadding),
-      itemCount: 20,
+      padding: EdgeInsets.only(
+        left: AppConfig.screenPadding,
+        right: AppConfig.screenPadding,
+        bottom: AppConfig.screenPadding,
+        top: AppConfig.screenPadding,
+      ),
+      itemCount: users.length,
       itemBuilder: (context, index) {
+        final user = users[index];
         return ListTile(
           contentPadding: EdgeInsets.symmetric(
             horizontal: AppConfig.mediumPadding,
@@ -216,9 +324,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 width: AppConfig.avatarSize,
                 height: AppConfig.avatarSize,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
@@ -233,38 +341,41 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Center(
                   child: Text(
-                    'U${index + 1}',
+                    user.initial,
                     style: config.titleMedium?.copyWith(color: Colors.white),
                   ),
                 ),
               ),
-              Positioned(
-                bottom: -AppConfig.smallPadding / 3,
-                right: -AppConfig.smallPadding / 3,
-                child: Container(
-                  width: AppConfig.smallIconSize,
-                  height: AppConfig.smallIconSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.green,
-                    border: Border.all(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      width: 1,
+              if (user.isOnline)
+                Positioned(
+                  bottom: -AppConfig.smallPadding / 3,
+                  right: -AppConfig.smallPadding / 3,
+                  child: Container(
+                    width: AppConfig.smallIconSize,
+                    height: AppConfig.smallIconSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.green,
+                      border: Border.all(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        width: 1,
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
-          title: Text('User ${index + 1}', style: config.titleMedium),
-          subtitle: Text('Online', style: config.bodySmall),
-          trailing: Icon(
-            Icons.chevron_right,
-            size: AppConfig.mediumIconSize,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          title: Text(
+            user.name,
+            style: config.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
+          subtitle: Text(
+            user.isOnline ? 'Online' : user.lastSeenText,
+            style: config.bodySmall,
+          ),
+
           onTap: () {
-            context.push('/home/chat/$index');
+            context.push('/home/chat/${user.id}');
           },
         );
       },
@@ -272,6 +383,37 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildChatHistoryTab() {
+    final chatHistory = _userService.getChatHistory();
+
+    if (chatHistory.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.chat_bubble_outline,
+              size: config.h(8),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            SizedBox(height: AppConfig.mediumSpacing),
+            Text(
+              'No chats yet',
+              style: config.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            SizedBox(height: AppConfig.smallSpacing),
+            Text(
+              'Start a conversation with a user',
+              style: config.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return ListView.separated(
       separatorBuilder: (context, index) => Divider(
         height: AppConfig.smallSpacing,
@@ -279,8 +421,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       key: const PageStorageKey<String>('chatHistoryKey'),
       padding: EdgeInsets.all(AppConfig.screenPadding),
-      itemCount: 15,
+      itemCount: chatHistory.length,
       itemBuilder: (context, index) {
+        final item = chatHistory[index];
+        final user = item.user;
+        final lastMessage = item.lastMessage;
+
         return ListTile(
           contentPadding: EdgeInsets.symmetric(
             horizontal: AppConfig.mediumPadding,
@@ -289,50 +435,75 @@ class _HomeScreenState extends State<HomeScreen> {
           leading: Container(
             width: AppConfig.avatarSize,
             height: AppConfig.avatarSize,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.greenAccent,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xff03FCFE),
+                  Color(0xff599BEF),
+                  Color.fromARGB(255, 111, 85, 189),
+                  Color(0xffB33ADF),
+                  Color(0xffE300DD),
+                ],
+                stops: [0.0, 0.05, 0.5, 0.9, 1.0],
+              ),
             ),
             child: Center(
               child: Text(
-                'C${index + 1}',
-                style: config.titleMedium?.copyWith(color: Colors.white),
+                user.initial,
+                style: config.titleMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
-          title: Text('Chat ${index + 1}', style: config.titleMedium),
-          subtitle: Text('Last message here...', style: config.bodySmall),
+          title: Text(
+            user.name,
+            style: config.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+            lastMessage?.message ?? 'No messages yet',
+            style: config.bodySmall,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${index + 1}h ago',
+                item.timeText,
                 style: config.labelSmall?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
-              if (index % 3 == 0)
+              if (item.unreadCount > 0)
                 Container(
                   margin: EdgeInsets.only(top: AppConfig.smallPadding),
-                  padding: EdgeInsets.all(AppConfig.smallPadding),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppConfig.smallPadding * 1.5,
+                    vertical: AppConfig.smallPadding / 2,
+                  ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    shape: BoxShape.circle,
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.circular(AppConfig.pillRadius),
                   ),
                   child: Text(
-                    '2',
+                    '${item.unreadCount}',
                     style: config.labelSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
             ],
           ),
-          onTap: () {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('Tapped Chat ${index + 1}')));
+          onTap: () async {
+            await context.push('/home/chat/${user.id}');
+            if (mounted) setState(() {});
           },
         );
       },
