@@ -39,7 +39,7 @@ class MessageService {
         throw Exception('Failed to load reply: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      final errorMessage = DioErrorHandler.handleError(e);
+      DioErrorHandler.handleError(e);
 
       return _getFallbackMessage();
     } catch (e) {

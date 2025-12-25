@@ -100,16 +100,21 @@ lib/
 | `app_router.dart` | GoRouter with ShellRoute, nested routes, and BlocProvider at route level |
 | `api_client.dart` | Dio singleton with interceptors, headers, and initialization |
 | `dio_error.dart` | DioException handling for Dio 5.x (all exception types) |
-| `api_url.dart` | API endpoint constants (Quotable, DummyJSON, JSONPlaceholder) |
+| `api_url.dart` | API endpoint constants (DummyJSON, Dictionary API) |
+| `result.dart` | Generic Result<T> wrapper for type-safe API responses (success/error) |
+| `snackbar_util.dart` | Reusable success snackbar utility with icons and styling |
 | `user_service.dart` | User CRUD operations + chat history generation |
 | `message_service.dart` | Message CRUD operations + API integration (fetchApiReply) |
+| `dictionary_service.dart` | Word lookup API integration with Result wrapper and error handling |
 | `user_model.dart` | User with UUID, lastOnline, computed isOnline property |
 | `message_model.dart` | Message with UUID, timestamp, isSender flag |
 | `quote_model.dart` | API response model for Quotable API |
+| `dictionary_model.dart` | Full dictionary API response with phonetics, meanings, definitions |
 | `chat_history_item.dart` | View model combining UserModel + MessageModel for chat list |
 | `chat_bloc.dart` | Bloc managing chat state (send/receive messages) |
 | `home_screen.dart` | Users List + Chat History tabs with RouteAware |
 | `chat_screen.dart` | Chat UI with Bloc, message bubbles, auto-scroll |
+| `word_definition_sheet.dart` | Dictionary bottom sheet with ValueNotifier state management |
 | `main_screen.dart` | Bottom navigation wrapper (ShellRoute child) |
 | `placeholder_screen.dart` | Simple placeholder for Offers and Settings tabs (shows tab name) |
 
@@ -321,7 +326,6 @@ Implementation:
 - Unit Tests
 
 
-
 ## Getting Started
 ```bash
 # Clone the repository
@@ -336,6 +340,74 @@ flutter pub get
 # Run the app
 flutter run
 ```
+
+## Testing 🧪
+
+This project includes a comprehensive test suite with **78 tests** covering all critical paths.
+
+### Test Structure
+```
+test/
+├── models/              # Unit tests for data models (5 files, ~25 tests)
+├── services/            # Unit tests for business logic (3 files, ~30 tests)
+├── bloc/                # BLoC state management tests (1 file, ~15 tests)
+├── integration/         # API integration tests (1 file, ~10 tests)
+└── widget_test.dart     # Widget/UI tests (~5 tests)
+```
+
+### Running Tests
+```bash
+# Run all tests
+flutter test
+
+# Run specific test suites
+flutter test test/models/           # Model tests only
+flutter test test/services/         # Service tests only
+flutter test test/bloc/             # BLoC tests only
+flutter test test/integration/      # Integration tests only
+
+```
+
+### Test Coverage
+
+**Unit Tests** (Fast - No Network)
+- All 5 models tested (serialization, validation, edge cases)
+- Service CRUD operations (Hive integration)
+- BLoC state management (events, states, transitions)
+- Input validation and helper methods
+
+**Integration Tests** (Real APIs)
+- Dictionary API (dictionaryapi.dev) - word lookup, validation
+- Quote API (dummyjson.com) - random quotes, error handling
+- Full user workflows - end-to-end testing
+
+**Widget Tests**
+- HomeScreen rendering and navigation
+- Component visibility and interactions
+
+### Test Results
+```
+Total Tests: 78
+Pass Rate: 100%
+Execution Time: ~19 seconds
+```
+
+### Key Testing Features
+
+- **Real API Integration**: Tests make actual HTTP calls to verify API contracts
+- **Clean Test Output**: Logging disabled in test mode for readability
+- **Isolated Tests**: Each test file uses unique Hive storage paths
+- **Comprehensive Coverage**: Unit, integration, and widget tests
+- **Fast Execution**: Optimized test suite completes in under 20 seconds
+
+### Testing Best Practices
+
+This project follows Flutter testing best practices:
+- Separate unit and integration tests
+- Test-specific Hive paths to avoid conflicts
+- Real API calls in integration tests (no mocks for API verification)
+- BLoC tested independently of UI
+- Clean, readable test organization
 
 ## Assignment Details
 

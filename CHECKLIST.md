@@ -2,7 +2,7 @@
 
 **Started:** 25/12/2025  
 **Deadline:** 27/12/2025
-**Current Phase**: ✅ Core Features + Bonus Complete - Ready for Submission
+**Current Phase**: ✅ Core Features + Bonus Complete + Branding - Ready for Submission
 
 ---
 
@@ -11,7 +11,7 @@
 - [x] Setup Git repo + first commit
 - [x] Add project documentation (README, CHANGELOG, CHECKLIST)
 - [x] Review UI/UX reference materials
-- [x] Choose API: yet to be decided
+- [x] Choose API: dummyjson
 
 ---
 
@@ -26,6 +26,8 @@
 - [x] uuid (^4.5.1) - Unique IDs
 - [x] intl (^0.19.0) - Date formatting
 - [x] path_provider (^2.1.4) - App directories
+- [x] flutter_svg (^2.2.3) - SVG rendering
+- [x] flutter_native_splash (^2.4.7) - Native splash screens
 ---
 
 ## MAIN NAVIGATION
@@ -115,15 +117,95 @@
 
 ---
 
-## TESTING (Bonus Points - Optional)
-- [ ] Unit tests for UserService
-- [ ] Unit tests for MessageService
-- [ ] Unit tests for DictionaryService
-- [ ] Widget tests for HomeScreen
-- [ ] Widget tests for ChatScreen
-- [ ] Integration tests for add user flow
-- [ ] Integration tests for send message flow
-- [ ] Integration tests for word lookup flow
+## BRANDING & VISUAL IDENTITY
+- [x] **Native Splash Screen**
+  - [x] Implemented with flutter_native_splash package
+  - [x] Brand color background (#005acf)
+  - [x] Custom splash logo (1024×1024 standard, 1152×1152 Android 12+)
+  - [x] Full-screen mode (hides status bar)
+  - [x] Platform support: Android (including 12+), iOS, Web
+  - [x] Proper image scaling (scaleAspectFit for iOS, center for Android)
+  - [x] Android 12+ adaptive icon background
+
+- [x] **App Icon**
+  - [x] Custom app icon designed (1024×1024)
+  - [x] Generated all sizes manually using online tool
+  - [x] Android: All densities (mdpi to xxxhdpi)
+  - [x] Android 8.0+: Adaptive icon with brand color background
+  - [x] iOS: All required sizes (AppIcon.appiconset)
+  - [x] Web: Favicon and manifest icons
+  - [x] Consistent with UI design language
+
+- [x] **UI Icons**
+  - [x] Custom home icon SVG in bottom navigation
+  - [x] Selected state: Brand primary color (#005acf)
+  - [x] Unselected state: Grey tint
+  - [x] Smooth color transitions
+  - [x] Proper SVG rendering with ColorFilter
+  - [x] Commit changes (v0.6.0)
+
+---
+
+## Testing Checklist
+
+### Unit Tests
+- [x] Model Tests
+  - [x] UserModel (JSON, initial, lastSeenText)
+  - [x] MessageModel (creation, IDs, serialization)
+  - [x] QuoteModel (API response parsing)
+  - [x] DictionaryModel (full structure)
+  - [x] ChatHistoryItem (nullable handling)
+
+- [x] Service Tests  
+  - [x] UserService CRUD operations
+  - [x] MessageService CRUD operations
+  - [x] DictionaryService validation logic
+
+- [x] BLoC Tests
+  - [x] ChatBloc initial state
+  - [x] LoadChatMessages event
+  - [x] SendMessage event (with API)
+  - [x] ReceiveMessage event
+  - [x] DeleteMessage event
+  - [x] State transitions
+  - [x] Multiple event sequences
+
+- [x] Widget Tests
+  - [x] HomeScreen rendering
+  - [x] FAB visibility
+  - [x] Tab navigation
+
+### Integration Tests
+- [x] Dictionary API Integration
+  - [x] Valid word lookup
+  - [x] Invalid word handling
+  - [x] Input validation
+  - [x] Synonyms/antonyms extraction
+
+- [x] Quote API Integration
+  - [x] Random quote fetching
+  - [x] Multiple calls
+
+- [x] Full Flow Integration
+  - [x] User → Message → API Reply workflow
+  - [x] Quote → Word lookup workflow
+
+- [x] Error Handling
+  - [x] Malformed input
+  - [x] Network failures
+
+### Test Infrastructure
+- [x] Unique Hive paths per test file
+- [x] ApiClient reset mechanism
+- [x] Clean test output (no verbose logging)
+- [x] Real API calls in integration tests
+- [x] Graceful package_info_plus handling
+
+### Test Metrics
+- [x] 78 total tests passing
+- [x] ~19 second execution time
+- [x] 100% pass rate
+- [x] All critical paths covered
 
 ---
 
@@ -152,13 +234,46 @@
 ## NOTES & DECISIONS
 
 ### Tech Stack
-- **Navigation**: go_router ^17.0.1
-- **State Management**: ValueListenable + ScrollController
-- **Responsive Design**: sizer ^2.0.15 + custom AppConfig
-- **Storage**: Hive (to be implemented)
-- **API**: yet to be decided
-- **HTTP Client**: dio ^5.9.0
-- **App Info**: package_info_plus ^9.0.0
+
+#### Core Framework
+- **Flutter**: 3.38.5
+- **Dart**: ^3.10.4
+
+#### State Management
+- **flutter_bloc**: ^8.1.6 - Bloc pattern with BlocProvider and reactive widgets
+- **equatable**: ^2.0.5 - Value equality for Bloc states/events
+- **ValueNotifier**: Built-in Flutter reactive state for simple cases
+
+#### Navigation
+- **go_router**: ^17.0.1 - Declarative routing with ShellRoute and path parameters
+
+#### Local Storage
+- **hive_ce**: ^2.16.0 - Fast NoSQL key-value database
+- **hive_ce_flutter**: ^2.1.0 - Flutter integration for Hive
+- **path_provider**: ^2.1.4 - Platform-specific directory paths
+
+#### Networking
+- **dio**: ^5.9.0 - HTTP client with interceptors and error handling
+- **package_info_plus**: ^9.0.0 - App metadata (version, build number)
+
+#### Code Generation
+- **build_runner**: ^2.4.13 - Code generation tool
+- **json_serializable**: ^6.9.4 - JSON serialization/deserialization
+
+#### Utilities
+- **uuid**: ^4.5.1 - RFC4122 UUID generation for unique IDs
+- **intl**: ^0.19.0 - Date/time formatting and internationalization
+- **sizer**: ^2.0.15 - Percentage-based responsive sizing
+
+#### APIs Used
+- **Quotable API** (api.quotable.io) - Random quotes for receiver messages
+- **Dictionary API** (dictionaryapi.dev) - Word definitions, synonyms, antonyms
+
+#### Custom Architecture
+- **AppConfig** - Theme-aware responsive sizing configuration
+- **Result<T>** - Type-safe API response wrapper
+- **SnackBarUtil** - Reusable UI feedback utilities
+- **DioErrorHandler** - Centralized error handling for network calls
 
 ### Time Tracking
 - Setup & Documentation: ~15 mins
@@ -181,20 +296,24 @@
 - Theme consistency - Resolved by using colorScheme throughout
 
 ### Features Implemented Beyond Requirements
-- go_router for type-safe declarative navigation
-- flutter_bloc for predictable state management
-- hive_ce for fast NoSQL local storage
-- JSON serializable models with build_runner code generation
-- ValueListenable for efficient state management
-- Proper error handling page (404 with navigation)
-- AppConfig with theme-aware responsive sizing
-- Network layer with DioErrorHandler
-- App metadata in API headers (version, platform, build number)
-- Material Design 3 theme colors throughout (ColorScheme.fromSeed)
-- VS Code launch configurations (debug, profile, release)
-- Word lookup feature with dictionary API (BONUS)
-- Result<T> wrapper for type-safe error handling
-- SnackBarUtil for consistent UI feedback
-- Comprehensive error messages with retry functionality
-- RouteObserver for lifecycle-aware state management
-- Timer-based auto-refresh for timestamps and online status
+- **Advanced Navigation**: go_router with type-safe declarative routing
+- **State Management**: flutter_bloc for predictable state management
+- **Fast Storage**: hive_ce for NoSQL local storage with zero-copy reads
+- **Code Generation**: JSON serializable models with build_runner
+- **Efficient State**: ValueListenable for lightweight reactive updates
+- **Error Handling**: Custom error page with 404 navigation
+- **Responsive Design**: AppConfig with theme-aware sizing
+- **Network Layer**: DioErrorHandler with detailed error messages
+- **API Metadata**: Version, platform, build number in API headers
+- **Material Design 3**: ColorScheme.fromSeed throughout
+- **Developer Tools**: VS Code launch configurations (debug, profile, release)
+- **Bonus Feature**: Word lookup with dictionary API
+- **Type Safety**: Result<T> wrapper for error handling
+- **UI Feedback**: SnackBarUtil for consistent user feedback
+- **Retry Logic**: Comprehensive error messages with retry functionality
+- **Lifecycle Management**: RouteObserver for state management
+- **Auto-refresh**: Timer-based updates for timestamps and online status
+- **Comprehensive Testing**: 78 tests covering unit, integration, and widgets
+- **Professional Branding**: Native splash screen and custom app icon
+- **Custom UI Icons**: SVG icons with smooth state transitions
+- **Clean Code**: No unused dependencies, no compiler warnings

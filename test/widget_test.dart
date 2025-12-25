@@ -1,30 +1,95 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:chat_module/main.dart';
+import 'package:hive_ce/hive.dart';
+import 'package:sizer/sizer.dart';
+import 'package:chat_module/screens/home_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  setUpAll(() async {
+    Hive.init('./test_widget_data');
+    await Hive.openBox('users');
+    await Hive.openBox('chats');
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUp(() async {
+    await Hive.box('users').clear();
+    await Hive.box('chats').clear();
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  tearDownAll(() async {
+    await Hive.box('users').close();
+    await Hive.box('chats').close();
+    await Hive.deleteFromDisk();
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('HomeScreen displays correctly', (tester) async {
+    await tester.pumpWidget(
+      Sizer(
+        builder: (context, orientation, deviceType) {
+          return const MaterialApp(home: HomeScreen());
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(HomeScreen), findsOneWidget);
+  });
+
+  testWidgets('HomeScreen shows FAB on Users tab', (tester) async {
+    await tester.pumpWidget(
+      Sizer(
+        builder: (context, orientation, deviceType) {
+          return const MaterialApp(home: HomeScreen());
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(FloatingActionButton), findsOneWidget);
+  });
+
+  testWidgets('HomeScreen can switch tabs', (tester) async {
+    await tester.pumpWidget(
+      Sizer(
+        builder: (context, orientation, deviceType) {
+          return const MaterialApp(home: HomeScreen());
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final chatHistoryButton = find.text('Chat History');
+    expect(chatHistoryButton, findsOneWidget);
+
+    await tester.tap(chatHistoryButton);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(FloatingActionButton), findsNothing);
+  });
+
+  testWidgets('HomeScreen shows empty state when no users', (tester) async {
+    await tester.pumpWidget(
+      Sizer(
+        builder: (context, orientation, deviceType) {
+          return const MaterialApp(home: HomeScreen());
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('No users yet'), findsOneWidget);
+  });
+
+  testWidgets('HomeScreen has two tabs', (tester) async {
+    await tester.pumpWidget(
+      Sizer(
+        builder: (context, orientation, deviceType) {
+          return const MaterialApp(home: HomeScreen());
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Users'), findsOneWidget);
+    expect(find.text('Chat History'), findsOneWidget);
   });
 }

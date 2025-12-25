@@ -1,12 +1,94 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
-## [Unreleased]
 
-### To Be Implemented (Optional)
-- Unit tests for services (UserService, MessageService, DictionaryService)
-- Widget tests for screens (HomeScreen, ChatScreen)
-- Integration tests for user flows (add user → send message → lookup word)
+## [0.6.0] - 2025-12-26
+
+### Added
+- **Native Splash Screen**
+  - Implemented platform-native splash screen using `flutter_native_splash` package
+  - Background color: `#005acf` (brand blue)
+  - Supports Android (including Android 12+), iOS, and Web platforms
+  - Full-screen mode enabled (hides status bar during splash)
+  - Adaptive icon background for Android 12+ compatibility
+  - Proper image scaling to prevent distortion across all platforms
+
+### Changed
+- **App Icon**
+  - Updated app icon across all platforms (Android, iOS, Web)
+  - New icon design matches UI aesthetic and brand colors
+  - Implemented Android adaptive icon with brand color background (`#005acf`)
+  - Generated all required icon sizes
+  - Icon properly displays on all launcher types and system UI elements
+
+- **Home Icon (UI)**
+  - Replaced home icon in bottom navigation bar with custom SVG design
+  - Updated icon to match overall app design language
+  - Implemented selected/unselected states with proper color transitions
+  - Icon now uses brand primary color when selected
+  - Improved icon consistency across navigation elements
+
+### Technical Details
+- Added `flutter_native_splash: ^2.4.7` to dev dependencies
+- Splash screen configuration in `pubspec.yaml`
+- App icon assets added to `assets/` directory
+- Automatic icon generation for all required platform sizes
+
+### Platform Support
+- Android: All densities (mdpi to xxxhdpi) + Adaptive icons for Android 8.0+
+- iOS: All required icon sizes + splash screen storyboard
+- Web: Favicon and manifest icons + splash screen
+- Android 12+: Dedicated splash screen implementation following Material You guidelines
+
+## [0.5.1] - 2025-12-26
+
+### Added - Testing Suite
+- **Model Tests** (5 files, ~25 tests)
+  - UserModel: JSON serialization, initial generation, lastSeenText formatting
+  - MessageModel: Sent/received creation, unique IDs, JSON serialization
+  - QuoteModel: API response deserialization with required ID field
+  - DictionaryModel: Full response structure, phonetics, meanings, definitions
+  - ChatHistoryItem: Chat item creation with nullable lastMessage handling
+
+- **Service Tests** (3 files, ~30 tests)
+  - UserService: CRUD operations, getAllUsers sorting, updateLastOnline, copyWith
+  - MessageService: Send/receive messages, getMessagesForUser, deleteMessage, getAllChatUserIds
+  - DictionaryService: Input validation (empty, invalid characters, spaces), helper methods
+
+- **BLoC Tests** (1 file, ~15 tests)
+  - ChatBloc: Initial state, LoadChatMessages event (empty/loaded/error states)
+  - SendMessage: User message + API reply handling
+  - ReceiveMessage: Incoming message handling
+  - DeleteMessage: Remove message, handle empty state
+  - State transitions and multiple event sequences
+
+- **Integration Tests** (1 file, ~10 tests)
+  - Dictionary API: Valid/invalid words, input validation, synonyms/antonyms extraction
+  - Quote API: Random quotes, multiple fetches
+  - Full workflows: User creation → message sending → API reply
+  - Error handling: Malformed input, network failures
+
+- **Widget Tests** (1 file, ~5 tests)
+  - HomeScreen: Basic rendering, FAB visibility, tab switching
+
+### Changed
+- **ApiClient**
+  - Added `reset()` method for test isolation
+  - Added `_isInTestMode()` to disable verbose logging in tests
+  - LogInterceptor now disabled during test execution
+  - Silent package_info_plus failures in test environment
+
+### Technical Improvements
+- Each test file uses unique Hive path to prevent lock conflicts
+- Integration tests run without TestWidgetsFlutterBinding (allows real HTTP)
+- package_info_plus gracefully handled in test environment
+- Clean test output with no verbose API logging
+
+### Test Coverage Summary
+- **Total Tests**: 78
+- **Pass Rate**: 100%
+- **Execution Time**: ~19 seconds
+- **Coverage**: Models, Services, BLoC, Widgets, API Integration
 
 ## [0.5.0] - 2024-12-26 (BONUS FEATURES)
 

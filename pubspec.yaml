@@ -67,6 +67,9 @@ dependencies:
   
   # Date/time formatting and internationalization     
   intl: ^0.20.2
+  flutter_svg: ^2.2.3
+  
+  
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +79,9 @@ dev_dependencies:
   
   # Build System - Runs code generators (creates *.g.dart files from annotations)
   build_runner: ^2.10.4
+
+  # Splash Screen - Easily create native splash screens for iOS and Android
+  flutter_native_splash: ^2.4.7
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -96,8 +102,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -125,3 +131,16 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_native_splash:
+  color: "#005acf"
+  
+  image: assets/home4.png
+  
+  android_12:
+    image: assets/home4.png
+    color: "#005acf"
+  
+  ios_content_mode: center
+
+  
+  fullscreen: true

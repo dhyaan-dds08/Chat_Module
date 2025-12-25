@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../core/config/app_config.dart';
 import '../core/services/user_service.dart';
@@ -269,11 +270,16 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.people_outline,
-              size: config.h(8),
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            SvgPicture.asset(
+              'assets/home_icon.svg',
+              width: config.h(8),
+              height: config.h(8),
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurfaceVariant,
+                BlendMode.srcIn,
+              ),
             ),
+
             SizedBox(height: AppConfig.mediumSpacing),
             Text(
               'No users yet',

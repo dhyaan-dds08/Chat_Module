@@ -46,3 +46,10 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+/test_data
+/test_data_message_service
+/test_data_user_service
+/test_integration_data
+/test_widget_data
+/test_data_chat_bloc

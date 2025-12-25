@@ -4,13 +4,12 @@ import 'package:chat_module/data/model/message_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../core/config/app_config.dart';
-import '../core/services/dictionary_service.dart';
 import '../core/services/user_service.dart';
-import '../data/model/dictionary_model.dart';
 import '../features/chat/bloc/chat_bloc.dart';
 import '../features/chat/bloc/chat_event.dart';
 import '../features/chat/bloc/chat_state.dart';
@@ -201,10 +200,14 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.chat_bubble_outline,
-                          size: config.h(8),
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        SvgPicture.asset(
+                          'assets/home_icon.svg',
+                          width: config.h(8),
+                          height: config.h(8),
+                          colorFilter: ColorFilter.mode(
+                            Theme.of(context).colorScheme.onSurfaceVariant,
+                            BlendMode.srcIn,
+                          ),
                         ),
                         SizedBox(height: AppConfig.mediumSpacing),
                         Text('No messages yet', style: config.titleMedium),

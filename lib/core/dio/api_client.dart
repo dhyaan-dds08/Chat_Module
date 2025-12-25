@@ -4,11 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class ApiClient {
-  static final ApiClient _instance = ApiClient._internal();
+  static ApiClient? _instance;
   late final Dio _dio;
+  bool _headersInitialized = false;
 
   factory ApiClient() {
-    return _instance;
+    _instance ??= ApiClient._internal();
+    return _instance!;
   }
 
   ApiClient._internal() {
@@ -25,7 +27,7 @@ class ApiClient {
 
     _initializeHeaders();
 
-    if (kDebugMode) {
+    if (kDebugMode && !_isInTestMode()) {
       _dio.interceptors.add(
         LogInterceptor(
           requestBody: true,
@@ -37,7 +39,13 @@ class ApiClient {
     }
   }
 
+  bool _isInTestMode() {
+    return Platform.environment.containsKey('FLUTTER_TEST');
+  }
+
   Future<void> _initializeHeaders() async {
+    if (_headersInitialized) return;
+
     try {
       final packageInfo = await PackageInfo.fromPlatform();
 
@@ -47,8 +55,13 @@ class ApiClient {
         'X-Build-Number': packageInfo.buildNumber,
         'X-Platform': Platform.operatingSystem,
       });
+
+      _headersInitialized = true;
     } catch (e) {
-      if (kDebugMode) debugPrint('Failed to initialize app headers: $e');
+      if (kDebugMode && !_isInTestMode()) {
+        debugPrint('Failed to initialize app headers: $e');
+      }
+      _headersInitialized = true;
     }
   }
 
@@ -59,4 +72,8 @@ class ApiClient {
   }
 
   Dio get dio => _dio;
+
+  static void reset() {
+    _instance = null;
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 class MainScreen extends StatelessWidget {
@@ -8,14 +9,26 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final selectedIndex = _calculateSelectedIndex(context);
+
     return Scaffold(
       body: child,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _calculateSelectedIndex(context),
+        currentIndex: selectedIndex,
         onTap: (index) => _onItemTapped(index, context),
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble_outline),
+            icon: SvgPicture.asset(
+              'assets/home_icon.svg',
+              width: 24,
+              height: 24,
+              colorFilter: ColorFilter.mode(
+                selectedIndex == 0
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey.shade600,
+                BlendMode.srcIn,
+              ),
+            ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
