@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.1+1
+version: 0.2.1+1
 
 environment:
   sdk: ^3.10.4
@@ -43,12 +43,24 @@ dependencies:
   
   # App Info - Retrieve app metadata (name, version, build number) for API headers and debugging
   package_info_plus: ^9.0.0
+
+  # Local Storage - Lightweight NoSQL database for offline data persistence
   hive_ce: ^2.16.0
+  
+  # Responsive Design - Percentage-based sizing (1.h = 1% screen height, 1.w = 1% width)
   sizer: ^3.1.3
+
+  # JSON Serialization - Runtime annotations for generating JSON serialization code
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # Code Generation - Generates JSON serialization/deserialization boilerplate code
+  json_serializable: ^6.11.3
+  
+  # Build System - Runs code generators (creates *.g.dart files from annotations)
+  build_runner: ^2.10.4
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

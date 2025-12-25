@@ -1,69 +1,52 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
-import 'placeholder_screen.dart';
+import 'package:go_router/go_router.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class MainScreen extends StatelessWidget {
+  final Widget child;
 
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  final ValueNotifier<int> _currentIndex = ValueNotifier(0);
-
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    PlaceholderScreen(tabName: 'Offers'),
-    PlaceholderScreen(tabName: 'Settings'),
-  ];
-
-  @override
-  void dispose() {
-    _currentIndex.dispose();
-    super.dispose();
-  }
+  const MainScreen({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ValueListenableBuilder<int>(
-        valueListenable: _currentIndex,
-        builder: (context, index, child) {
-          return _screens[index];
-        },
-      ),
-      bottomNavigationBar: ValueListenableBuilder<int>(
-        valueListenable: _currentIndex,
-        builder: (context, index, child) {
-          return BottomNavigationBar(
-            currentIndex: index,
-            onTap: (newIndex) {
-              _currentIndex.value = newIndex;
-            },
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: Color(0xff005acf),
-            unselectedItemColor: Colors.grey,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.chat),
-                activeIcon: Icon(Icons.chat),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.local_offer_outlined),
-                activeIcon: Icon(Icons.local_offer),
-                label: 'Offers',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings_outlined),
-                activeIcon: Icon(Icons.settings),
-                label: 'Settings',
-              ),
-            ],
-          );
-        },
+      body: child,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _calculateSelectedIndex(context),
+        onTap: (index) => _onItemTapped(index, context),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.local_offer),
+            label: 'Offers',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
       ),
     );
+  }
+
+  int _calculateSelectedIndex(BuildContext context) {
+    final location = GoRouterState.of(context).uri.toString();
+    if (location.startsWith('/home')) return 0;
+    if (location.startsWith('/offers')) return 1;
+    if (location.startsWith('/settings')) return 2;
+    return 0;
+  }
+
+  void _onItemTapped(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+        context.go('/home');
+        break;
+      case 1:
+        context.go('/offers');
+        break;
+      case 2:
+        context.go('/settings');
+        break;
+    }
   }
 }

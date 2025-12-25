@@ -12,7 +12,7 @@ This is a chat application with the following features:
 
 ## Development Progress
 
-- **Current Phase**: 🟡 Users List Implementation
+- **Current Phase**: 🟢 Navigation & Routing Complete
 - Track the implementation progress in [CHECKLIST.md](CHECKLIST.md)
 - View detailed change history in [CHANGELOG.md](CHANGELOG.md)
 
@@ -21,6 +21,41 @@ This is a chat application with the following features:
 This project follows a simple, scalable folder structure optimized for the project scope:
 - `lib/core/` - Core functionality (routes, config, constants)
 - `lib/screens/` - All application screens
+
+## Project Structure
+```
+lib/
+├── core/                          # Core functionality and configuration
+│   ├── config/
+│   │   └── app_config.dart       # Responsive sizing and theme-aware config
+│   ├── dio/
+│   │   └── api_client.dart       # Dio HTTP client setup and interceptors
+│   └── routes/
+│       └── app_router.dart       # GoRouter configuration with ShellRoute
+│
+├── data/
+│   └── model/
+│       ├── quote_model.dart      # Quote data model
+│       └── quote_model.g.dart    # Generated JSON serialization (auto-generated)
+│
+├── screens/                       # All application screens
+│   ├── home_screen.dart          # Users List + Chat History tabs
+│   ├── main_screen.dart          # Bottom navigation wrapper (ShellRoute)
+│   └── placeholder_screen.dart   # Offers/Settings placeholder screens
+│
+└── main.dart                      # App entry point
+```
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `app_config.dart` | Centralized responsive sizing (AppConfig.avatarSize, AppConfig.w(), AppConfig.h()) |
+| `app_router.dart` | Navigation configuration with ShellRoute for persistent bottom nav |
+| `api_client.dart` | Dio client with interceptors, headers, and error handling |
+| `quote_model.dart` | JSON-serializable model for API responses |
+| `home_screen.dart` | Custom AppBar with tab switcher, Users List, Chat History |
+| `main_screen.dart` | Bottom navigation that persists across routes |
 
 ## Tech Stack
 
@@ -39,6 +74,12 @@ Why go_router over traditional Navigator?
 - **Path Parameters**: Built-in template syntax for parsing path and query parameters (e.g., "user/:id")
 - **Deep Linking**: Native deep linking support across Android, iOS, and web platforms with URL handling
 - **Error Handling**: Centralized error routing for unknown or malformed URLs
+
+Implementation:
+- ShellRoute pattern for bottom navigation persistence
+- Nested routes: `/home/chat/:userId` 
+- Bottom nav visible across all screens
+- Type-safe navigation with path parameters
 
 Alternative Considered: Traditional Navigator 2.0 was rejected due to verbose API and lack of declarative structure.
 
@@ -96,23 +137,41 @@ Features:
 ## Current Features
 
 ### ✅ Completed
-- Bottom navigation with 3 tabs (Home, Offers, Settings)
-- Tab state preservation using ValueListenable
-- Material Design 3 theming
-- Error handling for unknown routes
-- Centralized routing configuration
-- Scroll position preservation
+- **Navigation System**
+  - Type-safe routing with go_router
+  - ShellRoute with persistent bottom navigation
+  - Chat screen routing with user ID parameters
+  - 404 error page with "Go Home" button
+  
+- **Home Screen (v0.2.0)**
+  - Custom tab switcher (Users List / Chat History)
+  - Scroll-aware AppBar with smooth animations
+  - Scroll position preservation per tab
+  
+- **Users List**
+  - 20 mock users with gradient avatars
+  - Online status indicators
+  - Navigate to chat on tap
+  - FAB for adding users (Users tab only)
+  
+- **Chat History**
+  - Mock chat sessions with timestamps
+  - Unread message badges
+  - Last message preview
 
 ### 🚧 In Progress
 - Users List screen with custom AppBar
 - Chat History view
 - Add users with FAB
+- Chat screen UI with message bubbles
+- API integration for receiver messages
 
 ### 📋 Planned
 
 - Chat screen with sender/receiver messages
 - API integration for receiver messages
 - Local data persistence
+- Word dictionary on long-press (bonus)
 
 
 ## Getting Started
@@ -142,7 +201,9 @@ flutter run
 
 - ✅ **v0.0.1** - Project setup and documentation
 - ✅ **v0.1.0** - Navigation system complete
-- 🚧 **v0.2.0** - Users List (in progress)
-- 📋 **v0.3.0** - Chat History
-- 📋 **v0.4.0** - Chat Screen
+- ✅ **v0.2.0** - Users List with dummy data
+- ✅ **v0.2.1** - Navigation system with go_router
+- 🚧 **v0.3.0** - Rendering local data from hive for user list and chat history, and attaching fab to create new user.
+- 🚧 **v0.4.0** - Chat Screen UI (in progress)
+- 📋 **v0.5.0** - API integration & message functionality
 - 📋 **v1.0.0** - Final submission

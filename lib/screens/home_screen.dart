@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:go_router/go_router.dart';
 import '../core/config/app_config.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -263,9 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           onTap: () {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('Tapped User ${index + 1}')));
+            context.push('/home/chat/$index');
           },
         );
       },

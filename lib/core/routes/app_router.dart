@@ -1,13 +1,43 @@
+import 'package:chat_module/screens/main_screen.dart';
+import 'package:chat_module/screens/placeholder_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../screens/main_screen.dart';
+import '../../screens/home_screen.dart';
 
 class AppRouter {
   static final goRouter = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/home',
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const MainScreen()),
+      ShellRoute(
+        builder: (context, state, child) {
+          return MainScreen(child: child); // MainScreen has bottom nav
+        },
+        routes: [
+          GoRoute(
+            path: '/home',
+            builder: (context, state) => const HomeScreen(),
+            routes: [
+              // Nested route - keeps bottom nav visible
+              GoRoute(
+                path: 'chat/:userId',
+                builder: (context, state) {
+                  final userId = state.pathParameters['userId']!;
+                  return PlaceholderScreen(tabName: 'Chat');
+                },
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/offers',
+            builder: (context, state) => PlaceholderScreen(tabName: 'Offers'),
+          ),
+          GoRoute(
+            path: '/settings',
+            builder: (context, state) => PlaceholderScreen(tabName: 'Settings'),
+          ),
+        ],
+      ),
     ],
     errorBuilder: (context, state) => Scaffold(
       body: Center(
@@ -19,7 +49,7 @@ class AppRouter {
             const Text('Page not found'),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => context.go('/'),
+              onPressed: () => context.go('/home'),
               child: const Text('Go Home'),
             ),
           ],

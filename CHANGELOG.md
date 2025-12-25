@@ -13,6 +13,24 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.2.1] - 2024-12-25
+
+### Added
+- Navigation system using `go_router` with ShellRoute pattern
+- Chat screen route with bottom navigation persistence
+- Navigate to chat screen from Users List by tapping on user
+- Route parameter handling for user ID
+- Error page with "Go Home" button for 404 routes
+
+### Changed
+- MainScreen now wraps child routes for bottom nav integration
+- Bottom nav remains visible when navigating to chat screen
+
+### Technical
+- Implemented ShellRoute to preserve bottom navigation across screens
+- Added nested route structure: `/home/chat/:userId`
+- Route configuration supports offers and settings placeholder screens
+
 ## [v0.2.0] - 2024-12-25
 
 ### Added
