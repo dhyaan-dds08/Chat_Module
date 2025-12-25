@@ -18,9 +18,27 @@ This is a chat application with the following features:
 
 ## Architecture
 
-This project follows a simple, scalable folder structure optimized for the project scope:
-- `lib/core/` - Core functionality (routes, config, constants)
-- `lib/screens/` - All application screens
+## Architecture
+
+This project follows a clean, feature-based architecture optimized for scalability:
+
+- **`lib/core/`** - Core functionality and infrastructure
+  - `config/` - App configuration (AppConfig for responsive sizing)
+  - `constants/` - API URLs and app-wide constants
+  - `dio/` - HTTP client setup and error handling
+  - `routes/` - Navigation configuration with go_router
+  - `services/` - Business logic services (User, Message, Dictionary)
+  - `utils/` - Utility classes (Result, SnackBarUtil)
+
+- **`lib/data/`** - Data layer
+  - `models/` - JSON-serializable data models
+
+- **`lib/features/`** - Feature modules
+  - `chat/bloc/` - Chat feature with Bloc state management
+
+- **`lib/screens/`** - Application screens (HomeScreen, ChatScreen, etc.)
+
+- **`lib/widgets/`** - Reusable UI components (WordDefinitionSheet)
 
 ## Project Structure
 ```
@@ -38,11 +56,17 @@ lib/
 │   ├── services/
 │   │   ├── message_service.dart  # Message CRUD + API integration
 │   │   └── user_service.dart     # User CRUD + chat history
+│   │   └── dictionary_service.dart     # Word look up api integration
+│   └── utils/
+│       ├── result.dart                  # Result<T> wrapper for API responses
+│       └── snackbar_util.dart           # Reusable snackbar utilities
 │
 ├── data/
 │   └── model/
 │       ├── quote_model.dart      # Quote data model
 │       ├── chat_history_item.dart    # ChatHistory view model
+│       ├── dictionary_model.dart        # Dictionary API response model
+│       ├── dictionary_model.g.dart      # Generated JSON
 │       ├── message_model.dart        # Message with UUID
 │       ├── message_model.g.dart      # Generated JSON
 │       ├── quote_model.g.dart        # Generated JSON
@@ -61,6 +85,9 @@ lib/
 │   ├── home_screen.dart          # Users List + Chat History
 │   ├── main_screen.dart          # Bottom navigation
 │   └── placeholder_screen.dart   # Offers/Settings
+│
+├── widgets/
+│   └── word_definition_sheet.dart       # Dictionary lookup bottom sheet
 │
 └── main.dart                      # App entry point + Hive init
 ```
@@ -210,8 +237,31 @@ Implementation:
 - Relative time: "Just now", "5 mins ago", "2 hours ago"
 
 ## Current Features
+### Completed (v0.5.0 - BONUS)
 
-### ✅ Completed (v0.4.0)
+#### Word Lookup Feature (BONUS)
+- SelectableText in message bubbles
+- Context menu with "Look up" option
+- Dictionary API integration (dictionaryapi.dev)
+- Beautiful bottom sheet with:
+  - Word, phonetic pronunciation
+  - Part of speech tags
+  - Multiple definitions (up to 3)
+  - Example sentences
+  - Synonyms and antonyms (up to 5 each)
+  - Loading and error states
+  - Retry functionality
+- Input validation (letters only)
+- Specific error messages
+- Result wrapper for type-safe error handling
+
+#### Utility Classes
+- SnackBarUtil for consistent success/error messages
+- Result<T> wrapper for API responses
+- Reusable UI components
+
+
+### Completed (v0.4.0)
 
 #### Navigation & Routing
 - Type-safe routing with go_router and ShellRoute
@@ -268,10 +318,8 @@ Implementation:
 
 ### 🚧 In Progress
 - None - core features complete!
-
-### 📋 Planned (Bonus)
-- Word dictionary on long-press
 - Unit Tests
+
 
 
 ## Getting Started
@@ -305,4 +353,5 @@ flutter run
 - ✅ **v0.2.1** - Navigation with go_router
 - ✅ **v0.3.0** - Hive storage, real user/chat data, API setup
 - ✅ **v0.4.0** - Chat screen with Bloc, messages, API integration
+- ✅ **v0.5.0** - Word lookup feature (BONUS) + utilities
 - 📋 **v1.0.0** - Final polish and submission

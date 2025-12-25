@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import '../core/config/app_config.dart';
 import '../core/services/user_service.dart';
+import '../core/utils/snackbar_utils.dart';
 import '../main.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -102,12 +103,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     await _userService.addUser(name);
     if (mounted) {
       setState(() {});
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('User "$name" added'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      SnackBarUtil.showSuccess(context, 'User "$name" added');
     }
   }
 

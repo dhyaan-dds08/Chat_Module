@@ -1,9 +1,11 @@
 import 'package:chat_module/core/dio/api_client.dart';
 import 'package:chat_module/data/model/message_model.dart';
 import 'package:chat_module/data/model/quote_model.dart';
+import 'package:dio/dio.dart';
 import 'package:hive_ce/hive.dart';
 
 import '../config/constants/api_url.dart';
+import '../dio/dio_error.dart';
 
 class MessageService {
   static const String _boxName = 'chats';
@@ -34,19 +36,27 @@ class MessageService {
         final quote = QuoteModel.fromJson(response.data);
         return quote.quote;
       } else {
-        throw Exception('Failed to load reply');
+        throw Exception('Failed to load reply: ${response.statusCode}');
       }
+    } on DioException catch (e) {
+      final errorMessage = DioErrorHandler.handleError(e);
+
+      return _getFallbackMessage();
     } catch (e) {
-      final fallbackMessages = [
-        'Hey there!',
-        'How are you doing?',
-        'That\'s interesting!',
-        'Tell me more!',
-        'I see what you mean.',
-      ];
-      fallbackMessages.shuffle();
-      return fallbackMessages.first;
+      return _getFallbackMessage();
     }
+  }
+
+  String _getFallbackMessage() {
+    final fallbackMessages = [
+      'Hey there!',
+      'How are you doing?',
+      'That\'s interesting!',
+      'Tell me more!',
+      'I see what you mean.',
+    ];
+    fallbackMessages.shuffle();
+    return fallbackMessages.first;
   }
 
   Future<void> sendMessage({

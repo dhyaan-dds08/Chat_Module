@@ -8,10 +8,13 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../core/config/app_config.dart';
+import '../core/services/dictionary_service.dart';
 import '../core/services/user_service.dart';
+import '../data/model/dictionary_model.dart';
 import '../features/chat/bloc/chat_bloc.dart';
 import '../features/chat/bloc/chat_event.dart';
 import '../features/chat/bloc/chat_state.dart';
+import '../widgets/word_defination_bottomsheet.dart';
 
 class ChatScreen extends StatefulWidget {
   final String userId;
@@ -300,27 +303,55 @@ class _ChatScreenState extends State<ChatScreen> {
                     decoration: BoxDecoration(
                       color: isSender
                           ? Theme.of(context).colorScheme.primary
-                          : Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
+                          : Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest
+                                .withOpacity(0.5),
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(AppConfig.mediumRadius),
-                        bottomRight: Radius.circular(AppConfig.mediumRadius),
+                        bottomLeft: Radius.circular(AppConfig.largeRadius),
+                        bottomRight: Radius.circular(AppConfig.largeRadius),
                         topLeft: isSender
-                            ? Radius.circular(AppConfig.mediumRadius)
-                            : Radius.zero,
+                            ? Radius.circular(AppConfig.largeRadius)
+                            : Radius.circular(AppConfig.smallRadius),
                         topRight: isSender
-                            ? Radius.zero
-                            : Radius.circular(AppConfig.mediumRadius),
+                            ? Radius.circular(AppConfig.smallRadius)
+                            : Radius.circular(AppConfig.largeRadius),
                       ),
                     ),
-                    child: Text(
+
+                    child: SelectableText(
                       message.message,
                       style: config.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
                         color: isSender
                             ? Colors.white
                             : Theme.of(context).colorScheme.onSurface,
                       ),
+
+                      contextMenuBuilder: (context, editableTextState) {
+                        final TextEditingValue value =
+                            editableTextState.textEditingValue;
+                        final String selectedText = value.selection.textInside(
+                          value.text,
+                        );
+
+                        return AdaptiveTextSelectionToolbar.buttonItems(
+                          anchors: editableTextState.contextMenuAnchors,
+                          buttonItems: [
+                            if (selectedText.trim().isNotEmpty)
+                              ContextMenuButtonItem(
+                                label: 'Look up',
+                                onPressed: () {
+                                  ContextMenuController.removeAny();
+                                  _showWordDefinition(
+                                    context,
+                                    selectedText.trim(),
+                                  );
+                                },
+                              ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                   SizedBox(height: AppConfig.smallPadding / 2),
@@ -345,7 +376,12 @@ class _ChatScreenState extends State<ChatScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xffE300DD), Color(0xffB33ADF)],
+                    colors: [
+                      Color.fromARGB(255, 111, 85, 189),
+                      Color(0xffB33ADF),
+                      Color(0xffE300DD),
+                    ],
+                    stops: [0.0, 0.5, 1.0],
                   ),
                 ),
                 child: Center(
@@ -359,6 +395,20 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showWordDefinition(BuildContext context, String word) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppConfig.largeRadius),
+        ),
+      ),
+      builder: (context) => WordDefinitionSheet(word: word),
     );
   }
 

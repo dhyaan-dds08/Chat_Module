@@ -53,7 +53,7 @@ class AppConfig {
   static double get fabSize => 7.h;
   static double get cardElevation => 0.2.h;
 
-  static double get smallRadius => 1.h;
+  static double get smallRadius => 0.5.h;
   static double get mediumRadius => 1.5.h;
   static double get largeRadius => 2.h;
   static double get pillRadius => 5.h;

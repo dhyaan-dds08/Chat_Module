@@ -3,9 +3,52 @@
 All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
-### To Be Implemented
-- Word dictionary on long-press (bonus feature)
-- Unit tests
+### To Be Implemented (Optional)
+- Unit tests for services (UserService, MessageService, DictionaryService)
+- Widget tests for screens (HomeScreen, ChatScreen)
+- Integration tests for user flows (add user → send message → lookup word)
+
+## [0.5.0] - 2024-12-26 (BONUS FEATURES)
+
+### Added
+- **Word Lookup Feature (BONUS)**
+  - SelectableText in message bubbles for text selection
+  - Custom context menu with "Look up" option
+  - Dictionary API integration (dictionaryapi.dev)
+  - DictionaryService with Result<T> wrapper for type-safe responses
+  - WordDefinitionSheet StatefulWidget with loading/error/success states
+  - Beautiful draggable bottom sheet showing:
+    - Word and phonetic pronunciation
+    - Part of speech tags (noun, verb, adjective, etc.)
+    - Multiple definitions (up to 3)
+    - Example sentences in context
+    - Synonyms (up to 5) with pill-style chips
+    - Antonyms (up to 5) with pill-style chips
+  - Input validation (only alphabetic characters)
+  - Specific error messages for different failure cases
+  - Retry functionality on error
+  - Loading indicator while fetching
+  
+- **Utility Classes**
+  - SnackBarUtil for consistent success messages
+  - Result<T> wrapper class for API responses
+  - Better error handling with specific messages
+  
+- **Models**
+  - DictionaryResponse model with full API structure
+  - Phonetic, Meaning, Definition, License sub-models
+  - JSON serialization with build_runner
+
+### Changed
+- Message bubbles now use SelectableText instead of Text
+- Improved error handling in MessageService.fetchApiReply()
+- Add user shows success snackbar with SnackBarUtil
+
+### Technical
+- contextMenuBuilder for custom selection menu
+- DraggableScrollableSheet for smooth bottom sheet
+- Stateful widget manages loading/error states internally
+- No context.mounted issues with proper lifecycle management
 
 ## [0.4.0] - 2024-12-26
 

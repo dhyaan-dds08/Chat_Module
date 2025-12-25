@@ -2,7 +2,7 @@
 
 **Started:** 25/12/2025  
 **Deadline:** 27/12/2025
-**Current Phase**: 🟢 Chat Screen Complete with API Integration
+**Current Phase**: ✅ Core Features + Bonus Complete - Ready for Submission
 
 ---
 
@@ -105,16 +105,25 @@
 
 ---
 
-## BONUS FEATURES (Optional)
-- [ ] Long press word → Show definition bottomsheet
-- [ ] Use dictionary API
+## BONUS FEATURES
+- [x] Long press word → Show definition bottomsheet
+- [x] Use dictionary API (dictionaryapi.dev)
+- [x] Show word, phonetic, definitions, examples, synonyms, antonyms
+- [x] Beautiful UI with loading and error states
+- [x] Input validation and retry functionality
+- [x] Commit changes (v0.5.0)
 
 ---
 
-## TESTING (Bonus Points)
-- [ ] Unit tests for services
-- [ ] Widget tests for key screens
-- [ ] Integration tests for user flows
+## TESTING (Bonus Points - Optional)
+- [ ] Unit tests for UserService
+- [ ] Unit tests for MessageService
+- [ ] Unit tests for DictionaryService
+- [ ] Widget tests for HomeScreen
+- [ ] Widget tests for ChatScreen
+- [ ] Integration tests for add user flow
+- [ ] Integration tests for send message flow
+- [ ] Integration tests for word lookup flow
 
 ---
 
@@ -131,14 +140,13 @@
 
 ## SUBMISSION
 - [ ] Clean code review
-- [ ] Multiple commits with good messages
-- [ ] Push to GitHub
+- [ ] Multiple commits with good messages ✅ (ongoing)
+- [ ] Push to GitHub with tags (ongoing)
 - [ ] Build release APK
-- [ ] Record demo video
+- [ ] Record demo video (show all features + bonus)
 - [ ] Upload APK + video to Google Drive
 - [ ] Email to hiring@mysivi.ai & yash@mysivi.ai (Reply All)
 - [ ] Include GitHub link + Drive link
-
 ---
 
 ## NOTES & DECISIONS
@@ -163,6 +171,8 @@
 - Message System & API Integration: ~1 hours
 - Chat Screen UI & Bloc: ~1 hours
 - Online Status & Auto-refresh: ~1 hour
+- Word Lookup Feature (BONUS): ~1 hours
+- Utilities & Error Handling: ~30 mins
 
 ### Issues Faced
 - `SliverAppBar` with `snap: true` and `floating: true` scrolls as part of the page content, whereas we needed it to stay fixed and animate in/out smoothly with ease-in-out transitions based on scroll direction, only on the Users tab.
@@ -171,10 +181,20 @@
 - Theme consistency - Resolved by using colorScheme throughout
 
 ### Features Implemented Beyond Requirements
+- go_router for type-safe declarative navigation
+- flutter_bloc for predictable state management
+- hive_ce for fast NoSQL local storage
+- JSON serializable models with build_runner code generation
 - ValueListenable for efficient state management
-- Proper error handling page
+- Proper error handling page (404 with navigation)
 - AppConfig with theme-aware responsive sizing
 - Network layer with DioErrorHandler
-- App metadata in API headers
-- Material Design 3 theme colors throughout
-- VS Code launch configurations
+- App metadata in API headers (version, platform, build number)
+- Material Design 3 theme colors throughout (ColorScheme.fromSeed)
+- VS Code launch configurations (debug, profile, release)
+- Word lookup feature with dictionary API (BONUS)
+- Result<T> wrapper for type-safe error handling
+- SnackBarUtil for consistent UI feedback
+- Comprehensive error messages with retry functionality
+- RouteObserver for lifecycle-aware state management
+- Timer-based auto-refresh for timestamps and online status
