@@ -8,7 +8,9 @@ This is a chat application with the following features:
 - **Users List**: Add and manage users with avatar initials
 - **Chat History**: View previous chat sessions
 - **Chat Screen**: Send messages and receive responses from API
-- **Custom UI**: AppBar with tab switcher, floating action buttons, and message bubbles
+- **Custom UI**: Smart AppBar (auto-hide/show), floating action buttons, and message bubbles
+- **Auto-Refresh**: Timestamps, online status, and unread counts update every 30 seconds
+- **Accessibility**: Full light/dark theme and text scaling support
 
 ## Development Progress
 
@@ -42,6 +44,8 @@ This project follows a clean, feature-based architecture optimized for scalabili
 
 ## Project Structure
 ```
+assets/
+├── home_icon.svg
 lib/
 ├── core/                          # Core functionality and configuration
 │   ├── config/
@@ -89,7 +93,13 @@ lib/
 ├── widgets/
 │   └── word_definition_sheet.dart       # Dictionary lookup bottom sheet
 │
-└── main.dart                      # App entry point + Hive init
+└── main.dart  
+test/
+├── models/              # Unit tests for data models (5 files, ~25 tests)
+├── services/            # Unit tests for business logic (3 files, ~22 tests)
+├── bloc/                # BLoC state management tests (1 file, ~15 tests)
+├── integration/         # API integration tests (1 file, ~10 tests)
+└── widget_test.dart     # Widget/UI tests (~5 tests)                    # App entry point + Hive init
 ```
 
 ### Key Files
@@ -127,7 +137,7 @@ lib/
 ### Currently Implemented
 
 #### Navigation
-**go_router (^17.0.1)** 
+**go_router (^17.0.1)** ✅
 
 Why go_router over traditional Navigator?
 
@@ -150,7 +160,7 @@ Alternative Considered: Traditional Navigator 2.0 was rejected due to verbose AP
 - Perfect for simple state like tab switching
 - Will integrate with Bloc for complex features
 
-**flutter_bloc (^8.1.6) + equatable (^2.0.5)** 
+**flutter_bloc (^8.1.6) + equatable (^2.0.7)** ✅
 
 Why Bloc over other solutions?
 - **Separation of concerns**: Business logic separated from UI
@@ -221,7 +231,7 @@ Implementation:
 - Services layer (UserService, MessageService) for abstraction
 
 #### Code Generation
-**build_runner (^2.10.4) + json_serializable (^6.11.3)**
+**build_runner (^2.10.4) + json_serializable (^6.11.3)** ✅
 
 - Generates JSON serialization code (*.g.dart files)
 - Run: `flutter pub run build_runner build --delete-conflicting-outputs`
@@ -261,14 +271,14 @@ Features:
 - All densities (mdpi to xxxhdpi)
 
 #### Unique IDs
-**uuid (^4.5.2)** 
+**uuid (^4.5.2)** ✅
 
 - Generates RFC4122 UUIDs for users and messages
 - v4 (random) UUIDs for global uniqueness
 - Better than timestamps for distributed systems
 
 #### Date Formatting
-**intl (^0.19.0)** 
+**intl (^0.19.0)** ✅
 
 - Format timestamps: "2:30 PM", "Mon 2:30 PM", "Dec 25, 2:30 PM"
 - 12-hour format with AM/PM
@@ -401,6 +411,7 @@ Alternative Considered: PNG icons were rejected due to scaling issues and larger
 - Graceful package_info_plus handling in test environment
 - Increased wait times for API-dependent tests (3 seconds)
 - All API integration tests removed mockito/mocktail dependencies
+  
 ### Completed (v0.5.0 - BONUS)
 
 #### Word Lookup Feature (BONUS)
@@ -424,6 +435,29 @@ Alternative Considered: PNG icons were rejected due to scaling issues and larger
 - Result<T> wrapper for API responses
 - Reusable UI components
 
+### Core UI/UX Enhancements (v0.4.0+)
+
+#### Smart UI Behaviors
+- **AppBar Auto-Hide**: AppBar hides when scrolling down in Users tab for more screen space
+- **AppBar Auto-Show**: AppBar slides back in when scrolling up
+- **Tab-Specific Behavior**: AppBar only hides on Users tab; stays fixed on Chat History
+- **Scroll Memory**: Each tab remembers its scroll position when switching
+- **Independent Scrolling**: Users tab and Chat History maintain separate scroll states
+
+#### Auto-Refresh Features
+- **Timestamp Updates**: All timestamps update every 30 seconds (auto-refresh timer)
+  - "Just now" → "1m ago" → "5m ago" → "2h ago"
+- **Online Status**: User online status updates every 30 seconds
+  - "Online" if active within 5 minutes
+  - "Last seen Xm ago" otherwise
+- **Unread Counts**: Random unread badges (0-5) refresh every 30 seconds
+  - Note: Simulated for demo purposes; would use real data in production
+
+#### Bottom Navigation
+- Type-safe navigation with GoRouter
+- No splash/ripple effect on tab switches (BottomNavigationBarType.fixed)
+- Persistent navigation state across screens
+- Custom SVG home icon with state-based colors
 
 ### Completed (v0.4.0)
 
@@ -447,7 +481,9 @@ Alternative Considered: PNG icons were rejected due to scaling issues and larger
 - Shows only users with messages
 - Real last message preview
 - Sorted by most recent message
-- Random unread count badges (0-5)
+- Random unread count badges (0-2) that refresh every 30 seconds
+- Note: Unread counts are simulated with random values (0-2) and automatically 
+  refresh with the 30-second auto-refresh timer
 - Timestamps with relative formatting
 - Empty state when no chats
 - Navigate to chat with state refresh
@@ -473,12 +509,40 @@ Alternative Considered: PNG icons were rejected due to scaling issues and larger
 - Consistent colors throughout app
 - Bottom nav with filled icons when selected
 
+
 #### Responsive Design
 - Percentage-based sizing with sizer
 - AppConfig for all dimensions
 - Theme-aware text styles
 - Smooth animations (200ms transitions)
 - Custom scroll behavior
+
+#### AppBar Behavior & Interactions
+- Custom AppBar scroll behavior (hide on scroll down, show on scroll up)
+- Implemented only on Users tab; Chat History keeps AppBar fixed
+- Smooth animations with AnimationController (200ms ease-in-out)
+- Scroll position preservation when switching between tabs
+- Each tab maintains independent scroll state using PageStorageKey
+- Bottom navigation without splash/ripple effect (type: BottomNavigationBarType.fixed)
+
+#### Accessibility & Theming
+- **Light/Dark Theme Support**
+  - Automatic system theme detection
+  - Material Design 3 with ColorScheme.fromSeed
+  - All colors use theme (no hardcoded colors)
+  - Seamless switching between light and dark modes
+  
+- **Text Scaling**
+  - Full accessibility support for system text size settings
+  - All text uses Theme.textTheme styles
+  - Scales from 0.5x to 2.0x based on user preferences
+  - Maintains readability across all scaling levels
+
+- **Offline Support**
+  - Messages and users persist in Hive local storage
+  - App fully functional without internet (except API features)
+  - Graceful degradation when network unavailable
+  - Data syncs automatically when connection restored
 
 
 ## Getting Started

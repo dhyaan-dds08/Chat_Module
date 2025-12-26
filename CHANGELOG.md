@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2025-12-26
+
+### Release - Production Ready
+
+**Final submission version for MySivi AI Flutter Developer Assignment**
+
+This release represents the complete, production-ready implementation of all required features plus bonus functionality.
+
+### Summary
+- ✅ All core features implemented and tested
+- ✅ Bonus feature: Word lookup with Dictionary API
+- ✅ 74 comprehensive tests (100% pass rate)
+- ✅ Native splash screen and custom app icon
+- ✅ Clean architecture with BLoC pattern
+- ✅ Complete documentation (README, CHANGELOG, CHECKLIST)
+- ✅ Production-ready error handling
+- ✅ Offline support with local persistence
+
+### Changes from v0.6.0
+- Final code cleanup and refactoring
+- Documentation updates for submission
+- Release build configuration optimized
+- Internet permissions added for release APK
+- All tests passing in final build
+
 ## [0.6.0] - 2025-12-26
 
 ### Added
@@ -136,7 +161,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - **Chat Screen with Bloc State Management**
   - flutter_bloc (^8.1.6) for state management
-  - equatable (^2.0.5) for value equality in states
+  - equatable (^2.0.7) for value equality in states
   - ChatBloc with events (LoadChatMessages, SendMessage, ReceiveMessage)
   - ChatState (ChatInitial, ChatLoading, ChatLoaded, ChatEmpty, ChatError, MessageSending)
   
@@ -150,7 +175,7 @@ All notable changes to this project will be documented in this file.
   
 - **API Integration**
   - Automatic API replies after sending message
-  - ApiService.fetchRandomMessage() using Quotable API
+  - ApiService.fetchApiReply() using Quotable API
   - 500ms delay for natural conversation feel
   - Fallback messages on API failure
   - DioException error handling with custom messages

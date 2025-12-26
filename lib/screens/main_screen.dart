@@ -13,33 +13,41 @@ class MainScreen extends StatelessWidget {
 
     return Scaffold(
       body: child,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: selectedIndex,
-        onTap: (index) => _onItemTapped(index, context),
-        items: [
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              'assets/home_icon.svg',
-              width: 24,
-              height: 24,
-              colorFilter: ColorFilter.mode(
-                selectedIndex == 0
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey.shade600,
-                BlendMode.srcIn,
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: BottomNavigationBar(
+          currentIndex: selectedIndex,
+
+          onTap: (index) => _onItemTapped(index, context),
+
+          items: [
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                'assets/home_icon.svg',
+                width: 24,
+                height: 24,
+                colorFilter: ColorFilter.mode(
+                  selectedIndex == 0
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey.shade600,
+                  BlendMode.srcIn,
+                ),
               ),
+              label: 'Home',
             ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_offer_outlined),
-            label: 'Offers',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            label: 'Settings',
-          ),
-        ],
+            BottomNavigationBarItem(
+              icon: Icon(Icons.local_offer_outlined),
+              label: 'Offers',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings_outlined),
+              label: 'Settings',
+            ),
+          ],
+        ),
       ),
     );
   }

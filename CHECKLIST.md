@@ -2,6 +2,7 @@
 
 **Started:** 25/12/2025  
 **Deadline:** 27/12/2025
+**Submitted on** 26/12/2025
 **Current Phase**: ✅ Core Features + Bonus Complete + Branding - Ready for Submission
 
 ---
@@ -21,7 +22,7 @@
 - [x] dio (^5.9.0) - HTTP client
 - [x] package_info_plus (^9.0.0) - App metadata
 - [x] flutter_bloc (^8.1.6) - State management
-- [x] equatable (^2.0.5) - Value equality
+- [x] equatable (^2.0.7) - Value equality
 - [x] hive_ce (^2.16.0) - Local storage
 - [x] uuid (^4.5.1) - Unique IDs
 - [x] intl (^0.19.0) - Date formatting
@@ -223,11 +224,11 @@
 - [x] Clean code review
 - [x] Multiple commits with good messages ✅ (ongoing)
 - [x] Push to GitHub with tags (ongoing)
-- [ ] Build release APK
-- [ ] Record demo video (show all features + bonus)
-- [ ] Upload APK + video to Google Drive
-- [ ] Email to hiring@mysivi.ai & yash@mysivi.ai (Reply All)
-- [ ] Include GitHub link + Drive link
+- [x] Build release APK
+- [x] Record demo video (show all features + bonus)
+- [x] Upload APK + video to Google Drive
+- [x] Email to hiring@mysivi.ai & yash@mysivi.ai (Reply All)
+- [x] Include GitHub link + Drive link
 ---
 
 ## NOTES & DECISIONS
@@ -240,7 +241,7 @@
 
 #### State Management
 - **flutter_bloc**: ^8.1.6 - Bloc pattern with BlocProvider and reactive widgets
-- **equatable**: ^2.0.5 - Value equality for Bloc states/events
+- **equatable**: ^2.0.7 - Value equality for Bloc states/events
 - **ValueNotifier**: Built-in Flutter reactive state for simple cases
 
 #### Navigation
@@ -263,7 +264,7 @@
 - **uuid**: ^4.5.1 - RFC4122 UUID generation for unique IDs
 - **intl**: ^0.19.0 - Date/time formatting and internationalization
 - **sizer**: ^2.0.15 - Percentage-based responsive sizing
-- **flutter_svg**: ^2.0.10+1 - SVG rendering for custom icons and graphics
+- **flutter_svg**: ^2.2.3 - SVG rendering for custom icons and graphics
 
 #### Development Tools (dev_dependencies)
 - **flutter_native_splash**: ^2.4.7 - Native splash screen generation for Android, iOS, and Web
@@ -291,12 +292,20 @@
 - Online Status & Auto-refresh: ~1 hour
 - Word Lookup Feature (BONUS): ~1 hours
 - Utilities & Error Handling: ~30 mins
+- Testing Suite (78 tests - Unit, Integration, Widget): ~2 hours
+- Native Splash Screen Setup & Configuration: ~30 mins
+- App Icon Design & Generation: ~20 mins
+- Custom UI Icons (SVG integration): ~15 mins
+- Documentation Updates (README, CHANGELOG, CHECKLIST): ~30 mins
+- Code Cleanup & Refactoring: ~20 mins
 
 ### Issues Faced
 - `SliverAppBar` with `snap: true` and `floating: true` scrolls as part of the page content, whereas we needed it to stay fixed and animate in/out smoothly with ease-in-out transitions based on scroll direction, only on the Users tab.
 - AppBar translucent background - Fixed with surfaceTintColor: Colors.transparent
 - Scroll detection on wrong tab - Fixed with conditional logic
 - Theme consistency - Resolved by using colorScheme throughout
+- All HTTP requests returned 400 status code in integration tests due to Flutter test framework intercepting network calls
+- Dictionary API and Quote API returning "No such word found" errors in release APK despite working in debug mode
 
 ### Features Implemented Beyond Requirements
 - **Advanced Navigation**: go_router with type-safe declarative routing

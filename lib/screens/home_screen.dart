@@ -437,19 +437,13 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
           leading: Container(
             width: AppConfig.avatarSize,
             height: AppConfig.avatarSize,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xff03FCFE),
-                  Color(0xff599BEF),
-                  Color.fromARGB(255, 111, 85, 189),
-                  Color(0xffB33ADF),
-                  Color(0xffE300DD),
-                ],
-                stops: [0.0, 0.05, 0.5, 0.9, 1.0],
+                colors: [Colors.greenAccent, Colors.green],
+                stops: [0.0, 1.0],
               ),
             ),
             child: Center(
